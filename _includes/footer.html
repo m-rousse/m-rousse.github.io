@@ -1,28 +1,26 @@
-<footer class="site-footer">
+<footer class="footer">
 
-  <div class="wrapper">
+  <div class="row">
 
-    <h2 class="footer-heading">{{ site.title }}</h2>
+    <div class="col-md-6">
+      <ul class="list-unlisted">
+        <li>{{ site.title }}</li>
+        <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+      </ul>
+    </div>
 
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li>{{ site.title }}</li>
-          <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
-        </ul>
-      </div>
-
+    <div class="col-md-6">
       <div class="footer-col footer-col-2">
         <ul class="social-media-list">
           {% if site.github_username %}
           <li>
-            {% include icon-github.html username=site.github_username %}
+            <a href="https://github.com/m-rousse"><i class="fa fa-github"></i> <span class="username">m-rousse</span></a>
           </li>
           {% endif %}
 
           {% if site.twitter_username %}
           <li>
-            {% include icon-twitter.html username=site.twitter_username %}
+            <a href="https://twitter.com/roussemath"><i class="fa fa-twit-icon"></i><span class="username">roussemath</span></a>
           </li>
           {% endif %}
         </ul>

@@ -1,0 +1,14 @@
+{
+  "name": "Last line until midnight",
+  "description": "The blog of an IT Security student in France.",
+  "version": "0.1.0",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-concurrent": "^2.2.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-sass": "^1.1.0",
+    "grunt-shell": "^1.2.1",
+    "load-grunt-tasks": "^3.4.1",
+    "time-grunt": "^1.3.0"
+  }
+}
