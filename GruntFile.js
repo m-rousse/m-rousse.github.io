@@ -81,7 +81,8 @@ module.exports = function (grunt) {
             deploy:
                 {
                     expand: true,
-                    src: ['_site/**'],
+                    cwd: '_site',
+                    src: ['**'],
                     dest: '/srv/math/'
                 }
         },
@@ -91,7 +92,7 @@ module.exports = function (grunt) {
                 'force': true
             },
             deploy: {
-                src: ['/srv/math']
+                src: ['/srv/math/*']
             }
         }
 
