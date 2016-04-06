@@ -13,10 +13,18 @@
         @content;
     }
 }
+
+@import url(https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,500&subset=latin,latin-ext);
+
 /* Space out content a bit */
 body {
     padding-top: 20px;
     padding-bottom: 20px;
+    font-family: 'Work Sans', sans-serif;
+}
+
+p {
+    text-align: justify;
 }
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .footer,

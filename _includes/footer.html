@@ -1,12 +1,11 @@
-<footer class="footer">
+<div class="container">
 
   <div class="row">
 
     <div class="col-md-6">
       <ul class="list-unstyled">
-        <li>{{ site.title }}</li>
-        <li>Contact : {{ site.email }}</li>
-        <li><a href="{{ "/feed.xml" | prepend: site.baseurl }}">RSS</a></li>
+        <li><a id="contactAdd"><i class="fa fa-envelope-o fa-fw"></i> {{ site.email }}</a></li>
+        <li><a href="{{ "/feed.xml" | prepend: site.baseurl }}"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
       </ul>
     </div>
 
@@ -15,29 +14,30 @@
         <ul class="list-unstyled">
           {% if site.github_username %}
           <li>
-            <a href="https://github.com/{{ site.github_username }}"><i class="fa fa-github"></i> <span class="username">{{ site.github_username }}</span></a>
+            <a href="https://github.com/{{ site.github_username }}"><i class="fa fa-github fa-fw"></i><span class="username">{{ site.github_username }}</span></a>
           </li>
           {% endif %}
 
           {% if site.twitter_username %}
           <li>
-            <a href="https://twitter.com/{{ site.twitter_username }}"><i class="fa fa-twit-icon"></i><span class="username">{{ site.twitter_username }}</span></a>
+            <a href="https://twitter.com/{{ site.twitter_username }}"><i class="fa fa-twit-icon fa-fw"></i><span class="username">{{ site.twitter_username }}</span></a>
           </li>
           {% endif %}
 
           {% if site.linkedin_username %}
           <li>
-            <a href="https://fr.linkedin.com/in/{{ site.linkedin_username }}"><i class="fa fa-lin"></i> <span class="username">{{ site.linkedin_username }}</span></a>
+            <a href="https://fr.linkedin.com/in/{{ site.linkedin_username }}"><i class="fa fa-lin fa-fw"></i><span class="username">{{ site.linkedin_username }}</span></a>
           </li>
           {% endif %}
         </ul>
       </div>
 
-      <div class="footer-col footer-col-3">
-        <p>{{ site.description }}</p>
-      </div>
     </div>
-
   </div>
-
-</footer>
+  <div class="row">
+    <div class="col-md-12">
+      <p class="text-muted">{{ site.description }}</p>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="{{ "/js/LastLineUntilMidnight.min.js" | prepend: site.baseurl }}"></script>

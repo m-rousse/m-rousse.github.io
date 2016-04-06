@@ -6,6 +6,7 @@ module.exports = function (grunt) {
     require('time-grunt')(grunt);
     // Load all Grunt tasks that are listed in package.json automagically
     require('load-grunt-tasks')(grunt);
+    grunt.loadNpmTasks('grunt-contrib-uglify');
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -25,6 +26,10 @@ module.exports = function (grunt) {
             sass: {
                 files: ['_sass/**/*.{scss,sass}'],
                 tasks: ['sass']
+            },
+            uglify: {
+                files: ['js/*.js'],
+                tasks: ['uglify']
             }
         },
 
@@ -41,10 +46,21 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: '_sass/',
-                    src: ['**/*.{scss,sass}'],
+                    src: ['**/*.{scss,sass}','node_modules/tether/dist/css/tether.min.css','node_modules/tether/dist/css/tether-theme-basic.min.css'],
                     dest: '_site/css',
                     ext: '.css'
                 }]
+            }
+        },
+
+        uglify: {
+            options: {
+                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+            },
+            build: {
+                files: {
+                    '_site/js/<%= pkg.name %>.min.js': ['node_modules/jquery/dist/jquery.min.js','node_modules/tether/dist/js/tether.min.js','js/bootstrap.min.js','js/main.js']
+                }
             }
         },
 
@@ -52,6 +68,7 @@ module.exports = function (grunt) {
         concurrent: {
             serve: [
                 'sass',
+                'uglify',
                 'watch',
                 'shell:jekyllServe'
             ],
@@ -70,7 +87,8 @@ module.exports = function (grunt) {
     // Register the grunt build task
     grunt.registerTask('build', [
         'shell:jekyllBuild',
-        'sass'
+        'sass',
+        'uglify'
     ]);
 
     // Register build as the default task fallback

@@ -13,5 +13,5 @@ debug: true
 # Build settings
 markdown: kramdown
 
-exclude: ['css','_scss','node_modules','package.json','GruntFile.js','Readme.md']
-keep_files: ['_site/css']
+exclude: ['css','_scss','node_modules','package.json','GruntFile.js','Readme.md', 'js']
+keep_files: ['_site/css', '_site/js']
