@@ -45,6 +45,10 @@ My server is running under Archlinux since 2012. It runs my mails, web hosting (
 My phone runs under CyanogenMod 13, freshly installed. I had to reset it recently, and I decided not to download many useless apps. The main apps I use are Twitter, Whatsapp and Airdroid.
 I installed F-Droid to have access to open-source apps, where I got K-9 Mail, a cute mail client and the most important one : DAVDroid. It allows me to synchronize my contacts and agenda with my owncloud server.
 
+I use daily Keepass to store all my passwords, Firefox, Thunderbird and the freshly installed Atom.io as a text editor.
 
+I am addicted to the Office Suite as it produce easily beautiful documents. I abuse OneNote synced with my phone to store every tasks and ideas I have.
+
+And lastly, I use VirtualBox to launch my various virtual machines.
 
 ### What would be your dream setup
