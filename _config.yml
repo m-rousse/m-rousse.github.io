@@ -9,6 +9,7 @@ twitter_username: roussemath
 github_username:  m-rousse
 linkedin_username:  mathieurousse
 debug: true
+charset: utf-8
 
 # Build settings
 markdown: kramdown

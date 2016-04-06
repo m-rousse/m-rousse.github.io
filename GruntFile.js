@@ -77,6 +77,21 @@ module.exports = function (grunt) {
             }
         },
 
+        copy: {
+            deploy:
+                {
+                    expand: true,
+                    src: ['_site/**'],
+                    dest: '/srv/math/'
+                }
+        },
+
+        clean: {
+            deploy: {
+                src: ['/srv/math']
+            }
+        }
+
     });
 
     // Register the grunt serve task
@@ -89,6 +104,12 @@ module.exports = function (grunt) {
         'shell:jekyllBuild',
         'sass',
         'uglify'
+    ]);
+
+    grunt.registerTask('bd', [
+        'build',
+        'clean:deploy',
+        'copy:deploy'
     ]);
 
     // Register build as the default task fallback

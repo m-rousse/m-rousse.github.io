@@ -5,7 +5,7 @@ date:   2016-04-06 11:52:53 +0200
 categories: misc
 ---
 
-I spent many hours on internet, discovering new technologies, comparing them to understand their assets and how they could help me on my projects.
+I spent many hours on the internet, discovering new technologies, comparing them to understand their assets and how they could help me on my projects.
 
 During one of those promenades, I found [usethis.com](https://usesthis.com), a website which interviews folks about their setup.
 
@@ -22,7 +22,7 @@ It was at this moment I knew I would do security later. I kept practicing securi
 
 So I do write programs, experiment server configurations, try to crack the crackmes and attend security conferences as much as I can.
 
-### What hardware do you use
+### What hardware do you use?
 
 I have had the occasion to put my hands over a lot of hardware since I started. I played with several Cisco C2950, C3550 and C2960, all 48 ports. They were useless for a daily use, but handsome when in LAN Party.
 
@@ -36,7 +36,7 @@ I do also have a Raspberry Pi 1 version B. It is a very good toy, but lacks blue
 
 I bought a Hercules XPS DJ Monitor set for my desk. It has dramatically changed the way I listen to music while working. They where quite expensive (80€) but they are absolutely perfect to my ears.
 
-### What software do you use
+### What software do you use?
 
 My laptop runs with a dualboot Windows 8.1 (for work reasons, I had to downgrade from Win 10) with Debian 8. I worked during 6 years with Archlinux, which IS an excellent distribution. I chose to change in order to have more experience with Debian.
 
