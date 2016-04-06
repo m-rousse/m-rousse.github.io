@@ -1,0 +1,31 @@
+---
+layout: post
+title:  "My setup"
+date:   2016-04-06 11:52:53 +0200
+categories: misc
+---
+
+I spent many hours on internet, discovering new technologies, comparing them to understand their assets and how they could help me on my projects.
+
+During one of those promenades, I found [usethis.com](https://usesthis.com), a website which interviews folks about their setup.
+
+I found many great products in it and wanted to share mine as a student. Few years after I start working, I will update this.
+
+### Who are you, and what do you do?
+I am Mathieu Rousse, a student in micro-electronics and computer sciences at the École des Mines de Saint-Étienne campus Provence, near Marseille in the south of France. This is a very broad subject and I decided to focus more on the security side of it. So I will be doing my third year at Télécom SudParis school in the south-east of Paris. There I will be studying network security and software security.
+
+During the next 5 months, I will be working on a high-performance computing framework using OpenCL and CUDA to analyze ultrasound data.
+
+When I was 15 years old I discovered what was linux, a server, and how a misconfigured LDAP server could compromise all accounts from my accounts. At that moment I also discovered what were the consequences of accessing a system I was not supposed to.
+
+It was at this moment I knew I would do security later. I kept practicing security since then and built my own lab. Eventually during LAN Parties I would try some new techniques when a game I already lost took too much time to end. (My very first DoS).
+
+So I do write programs, experiment server configurations, try to crack the crackmes and attend security conferences as much as I can.
+
+### What hardware do you use
+
+// TODO
+
+### What software do you use
+
+### What would be your dream setup

@@ -1,12 +1,13 @@
 # Site settings
 title: Last code until midnight
-email: mathieu@rousse.me
+email: mathieu at rousse d0t me
 description: > # this means to ignore newlines until "baseurl:"
   The blog of an IT Security student in France.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://math.rousse.me" # the base hostname & protocol for your site
 twitter_username: roussemath
 github_username:  m-rousse
+linkedin_username:  mathieurousse
 
 # Build settings
 markdown: kramdown
