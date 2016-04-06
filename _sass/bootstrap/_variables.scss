@@ -26,11 +26,11 @@
 //
 // Grayscale and brand colors for use across Bootstrap.
 
-$gray-dark:                 #373a3c !default;
-$gray:                      #55595c !default;
-$gray-light:                #818a91 !default;
-$gray-lighter:              #eceeef !default;
-$gray-lightest:             #f7f7f9 !default;
+$gray-dark:                 #373a50 !default;
+$gray:                      #555970 !default;
+$gray-light:                #818a9f !default;
+$gray-lighter:              #eceeff !default;
+$gray-lightest:             #f3f3ff !default;
 
 $brand-primary:             #0275d8 !default;
 $brand-success:             #5cb85c !default;
@@ -43,11 +43,11 @@ $brand-danger:              #d9534f !default;
 //
 // Quickly modify global styling by enabling or disabling optional features.
 
-$enable-flex:               false !default;
+$enable-flex:               true !default;
 $enable-rounded:            true !default;
-$enable-shadows:            false !default;
-$enable-gradients:          false !default;
-$enable-transitions:        false !default;
+$enable-shadows:            true !default;
+$enable-gradients:          true !default;
+$enable-transitions:        true !default;
 $enable-hover-media-query:  false !default;
 $enable-grid-classes:       true !default;
 
@@ -93,10 +93,10 @@ $body-color:                 $gray-dark !default;
 //
 // Style anchor elements.
 
-$link-color:                 $brand-primary !default;
+$link-color:                 darken($brand-primary,5%) !default;
 $link-decoration:            none !default;
-$link-hover-color:           darken($link-color, 15%) !default;
-$link-hover-decoration:      underline !default;
+$link-hover-color:           lighten($link-color, 15%) !default;
+$link-hover-decoration:      none !default;
 
 
 // Grid breakpoints
