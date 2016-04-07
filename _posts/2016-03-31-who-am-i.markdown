@@ -24,31 +24,35 @@ So I do write programs, experiment server configurations, try to crack the crack
 
 ### What hardware do you use?
 
-I have had the occasion to put my hands over a lot of hardware since I started. I played with several Cisco C2950, C3550 and C2960, all 48 ports. They were useless for a daily use, but handsome when in LAN Party.
+I have had the occasion to put my hands over a lot of hardware since I started. I played with several Cisco [C2950](http://www.cisco.com/en/US/products/hw/switches/ps628/ps3821/index.html), [C3550](http://www.cisco.com/en/US/products/hw/switches/ps646/products_data_sheet09186a00800913d0.html) and [C2960](http://www.cisco.com/c/en/us/products/collateral/switches/catalyst-2960-series-switches/prod_bulletin0900aecd80322c22.html), all 48 ports. They were useless for a daily use, but handsome when in LAN Party.
 
 My everyday computer is a MSI laptop with a 15" i7 2.5GHz quad-core and 16G of RAM. I added 240G of SSD to complements its terabyte HDD. It is a little too powerful for the everyday use I have.
 
-My personal Server is hosted by Kimsufi (OVH) in Canada, it has two gigs of ram and two thread at 1.86GHz for a 500G storage. It is more than enough to handle every experiments I may want to do.
+My personal Server is hosted by [Kimsufi](http://www.kimsufi.com/en/servers.xml) (OVH) in Canada, it has two gigs of ram and two thread at 1.86GHz for a 500G storage. It is more than enough to handle every experiments I may want to do.
 
-My phone is a OnePlus One I bought by chance because a friend had an invitation about to expire. It is surprisingly fluid and powerful. As my laptop, maybe a little too powerful for what I do with it.
+My phone is a [OnePlus One](http://www.gsmarena.com/oneplus_one-6327.php) I bought by chance because a friend had an invitation about to expire. It is surprisingly fluid and powerful. As my laptop, maybe a little too powerful for what I do with it.
 
-I do also have a Raspberry Pi 1 version B. It is a very good toy, but lacks bluetooth/wifi by default and sometimes freezes when used as a network router.
+I do also have a [Raspberry Pi 1 version B](https://www.raspberrypi.org/products/model-b/). It is a very good toy, but lacks bluetooth/wifi by default and sometimes freezes when used as a network router.
 
-I bought a Hercules XPS DJ Monitor set for my desk. It has dramatically changed the way I listen to music while working. They where quite expensive (80€) but they are absolutely perfect to my ears.
+I bought a [Hercules XPS DJ Monitor](http://www.hercules.com/us/dj-speakers/bdd/p/172/xps-2-0-80-dj-monitor/) set for my desk. It has dramatically changed the way I listen to music while working. They where quite expensive (80€) but they are absolutely perfect to my ears.
 
 ### What software do you use?
 
-My laptop runs with a dualboot Windows 8.1 (for work reasons, I had to downgrade from Win 10) with Debian 8. I worked during 6 years with Archlinux, which IS an excellent distribution. I chose to change in order to have more experience with Debian.
+My laptop runs with a dualboot Windows 8.1 (for work reasons, I had to downgrade from Win 10) with Debian 8. I worked during 6 years with [Archlinux](https://www.archlinux.org/), which IS an excellent distribution. I chose to change in order to have more experience with Debian.
 
-My server is running under Archlinux since 2012. It runs my mails, web hosting (apache/mysql/php), my versionning (Gogs), and an owncloud instance to host my calendar, contacts and to share/backup files.
+My server is running under Archlinux since 2012. It runs my mails, web hosting (apache/mysql/php), my versionning ([Gogs](https://gogs.io/)), and an [owncloud](https://owncloud.org/) instance to host my calendar, contacts and to share/backup files.
 
-My phone runs under CyanogenMod 13, freshly installed. I had to reset it recently, and I decided not to download many useless apps. The main apps I use are Twitter, Whatsapp and Airdroid.
-I installed F-Droid to have access to open-source apps, where I got K-9 Mail, a cute mail client and the most important one : DAVDroid. It allows me to synchronize my contacts and agenda with my owncloud server.
+My phone runs under [CyanogenMod 13](https://download.cyanogenmod.org/?device=bacon), freshly installed. I had to reset it recently, and I decided not to download many useless apps. The main apps I use are Twitter, Whatsapp and Airdroid.
+I installed [F-Droid](https://f-droid.org/) to have access to open-source apps, where I got [K-9 Mail](https://f-droid.org/repository/browse/?fdfilter=k-9&fdid=com.fsck.k9), a cute mail client and the most important one : [DAVDroid](https://f-droid.org/repository/browse/?fdfilter=davdroid&fdid=at.bitfire.davdroid). It allows me to synchronize my contacts and agenda with my owncloud server.
 
-I use daily Keepass to store all my passwords, Firefox, Thunderbird and the freshly installed Atom.io as a text editor.
+I use daily [Keepass](http://keepass.info/) to store all my passwords, Firefox, Thunderbird and the freshly installed [Atom.io](https://atom.io/) as a text editor.
 
 I am addicted to the Office Suite as it produce easily beautiful documents. I abuse OneNote synced with my phone to store every tasks and ideas I have.
 
 And lastly, I use VirtualBox to launch my various virtual machines.
 
 ### What would be your dream setup
+
+Raspberry Pi 3 : Wifi + Bluetooth -> link with app
+Learn LaTeX
+Cloud backup
