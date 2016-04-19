@@ -53,6 +53,8 @@ And lastly, I use VirtualBox to launch my various virtual machines.
 
 ### What would be your dream setup
 
-Raspberry Pi 3 : Wifi + Bluetooth -> link with app
-Learn LaTeX
-Cloud backup
+My Raspberry Pi 1b lacks native WiFi/Bluetooth, which makes me connect two USB dongles which draws a lot of current and occupies the two USB ports. I would love to switch to a Raspberry Pi 3, first to be able to realize a network toolkit : I developed a simple application to connect to my RasPi over bluetooth with my phone, from which I can set a "mode" (Bridged AP, routed AP, MitM bridged with a USB-RJ45, capture over eth0, automated WiFi discovery/pentest, ...).
+
+The Office Suite being the most important thing that keeps me from having a full GNU/Linux computer, I need to learn LaTeX.
+
+I finally set up my VPN to connect every gadget to an unique network where I could host my experiments and personal services. What I do lack now is a backup in the cloud. I spent a lot of time reading how the cloud could the best solution to store my backups, but I still am reluctant now. Having my files available with owncloud makes me confortable as I can get then whenever I want and I do know where they are stored. But with this setup, I can't replicate them safely. After reading Daniel Miessler blog post ["Why should you start backing up to the cloud"](https://danielmiessler.com/blog/backups-cloud/), I seriously considered moving my backups to the cloud. Now, all I need is to "Just do it".
