@@ -68,7 +68,7 @@ module.exports = function (grunt) {
             },
             build: {
                 files: {
-                    '_site/js/<%= pkg.name %>.min.js': ['node_modules/jquery/dist/jquery.min.js','node_modules/tether/dist/js/tether.min.js','js/bootstrap.min.js','js/main.js','node_modules/lightbox2/dist/js/lightbox.min.js']
+                    '_site/js/<%= pkg.name %>.min.js': ['node_modules/jquery/dist/jquery.min.js','node_modules/tether/dist/js/tether.min.js','js/bootstrap.min.js','js/main.js','node_modules/lightbox2/dist/js/lightbox.min.js', 'js/prism.min.js']
                 }
             }
         },

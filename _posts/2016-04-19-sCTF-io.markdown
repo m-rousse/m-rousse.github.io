@@ -17,15 +17,77 @@ I used IDA during the challenge, but as I want to practice with radare2 the writ
 
 First, I ran the program to have an idea of what to look for.
 
-{% highlight bash linenos %}
-root@kali:~/sCTF/Rev1# ./rev1
+<div><pre class="language-bash line-numbers">
+<code class="language-bash">root@kali:~/sCTF/Rev1# ./rev1
 What is the magic password?
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-{% endhighlight %}
+</code></pre></div>
 
 So it does not print anything if the password is wrong. It's time to fire radare2 !
 
-{% gist m-rousse/fc268c82b2e82026ab965499b3f855f5 %}
+<div><pre class="language-nasm line-numbers">
+<code class="language-nasm">[0x00400560]> aaa
+[0x00400560]> iz
+vaddr=0x00400744 paddr=0x00000744 ordinal=000 sz=28 len=27 section=.rodata type=a string=What is the magic password?
+vaddr=0x00400763 paddr=0x00000763 ordinal=001 sz=26 len=25 section=.rodata type=a string=Correct! Your flag is: %s
+
+[0x00400560]> pd 10 @ 0x00400744-5
+|          0x0040073f    0001           add byte [rcx], al
+|          ;-- sym._IO_stdin_used:
+|          ;-- section..rodata:
+|          0x00400740    0100           add dword [rax], eax           ; [14] va=0x00400740 pa=0x00000740 sz=61 vsz=61 rwx=-r-- .rodata
+|          0x00400742    0200           add al, byte [rax]
+|          ; DATA XREF from 0x00400677 (sym.main)
+|          ;-- str.What_is_the_magic_password_:
+|          0x00400744     .string "What is the magic password?" ; len=28
+|      |   ; DATA XREF from 0x00400688 (sym.main)
+       |   0x00400760    256400436f     and eax, 0x6f430064
+|      |   ; DATA XREF from 0x004006a8 (sym.main)
+       |   ;-- str.Correct__Your_flag_is:__s:
+       |   0x00400763     .string "Correct! Your flag is: %s" ; len=26
+           ;-- section_end..rodata:
+           0x0040077d    0000           add byte [rax], al
+           0x0040077f    0001           add byte [rcx], al
+           ;-- section..eh_frame_hdr:
+           0x00400780    011b           add dword [rbx], ebx           ; [15] va=0x00400780 pa=0x00000780 sz=52 vsz=52 rwx=-r-- .eh_frame_hdr
+           0x00400782    033b           add edi, dword [rbx]
+[0x00400560]> s 0x00400677
+[0x00400677]> pdf @ 0x00400677
+/ (fcn) sym.main 104
+|          ; var int local_0_4    @ rbp-0x4
+|          ; var int local_1      @ rbp-0x8
+|          ; var int local_2      @ rbp-0x10
+|          ; DATA XREF from 0x0040057d (entry0)
+|          ;-- main:
+|          ;-- sym.main:
+|          0x00400656    55             push rbp
+|          0x00400657    4889e5         mov rbp, rsp
+|          0x0040065a    4883ec10       sub rsp, 0x10
+|          0x0040065e    c745fc000000.  mov dword [rbp-local_0_4], 0
+|          0x00400665    48b868347830.  movabs rax, 0x2121217230783468
+|          0x0040066f    488945f0       mov qword [rbp-local_2], rax
+|          0x00400673    c645f800       mov byte [rbp-local_1], 0
+|          0x00400677    bf44074000     mov edi, str.What_is_the_magic_password_ ; "What is the magic password?" @ 0x400744
+|          0x0040067c    e8affeffff     call sym.imp.puts ;sym.imp.puts()
+|          0x00400681    488d45fc       lea rax, qword [rbp-local_0_4]
+|          0x00400685    4889c6         mov rsi, rax
+|          0x00400688    bf60074000     mov edi, 0x400760
+|          0x0040068d    b800000000     mov eax, 0
+|          0x00400692    e8b9feffff     call sym.imp.scanf ;sym.imp.scanf()
+|          0x00400697    8b45fc         mov eax, dword [rbp-local_0_4]
+|          0x0040069a    3d745b0000     cmp eax, 0x5b74
+|      ,=< 0x0040069f    7516           jne 0x4006b7
+|      |   0x004006a1    488d45f0       lea rax, qword [rbp-local_2]
+|      |   0x004006a5    4889c6         mov rsi, rax
+|      |   0x004006a8    bf63074000     mov edi, str.Correct__Your_flag_is:__s ; "Correct! Your flag is: %s" @ 0x400763
+|      |   0x004006ad    b800000000     mov eax, 0
+|      |   0x004006b2    e859feffff     call sym.imp.printf ;sym.imp.printf()
+|      |   ; JMP XREF from 0x0040069f (sym.main)
+|      `-> 0x004006b7    b800000000     mov eax, 0
+|          0x004006bc    c9             leave
+\          0x004006bd    c3             ret
+[0x00400677]> q
+</code></pre></div>
 
 The steps :
 
@@ -38,12 +100,12 @@ The steps :
 
 We found our password, let's feed it to the binary :
 
-{% highlight bash linenos %}
-root@kali:~/sCTF/Rev1# ./rev1
+<div><pre class="language-bash line-numbers">
+<code class="language-bash">root@kali:~/sCTF/Rev1# ./rev1
 What is the magic password?
 23412
 Correct! Your flag is: h4x0r!!!
-{% endhighlight %}
+</code></pre></div>
 
 We did it !
 

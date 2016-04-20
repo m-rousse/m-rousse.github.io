@@ -1,387 +1,325 @@
-.highlight pre {
-    background-color: #F3ECDC;
-    color: #744b00;
-    margin: 5px;
+/* http://prismjs.com/download.html?themes=prism-coy&languages=markup+css+clike+javascript+nasm+php&plugins=line-highlight+line-numbers */
+/**
+ * prism.js Coy theme for JavaScript, CoffeeScript, CSS and HTML
+ * Based on https://github.com/tshedor/workshop-wp-theme (Example: http://workshop.kansan.com/category/sessions/basics or http://workshop.timshedor.com/category/sessions/basics);
+ * @author Tim  Shedor
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: black;
+	background: none;
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	position: relative;
+	margin: .5em 0;
+	-webkit-box-shadow: -1px 0px 0px 0px #358ccb, 0px 0px 0px 1px #dfdfdf;
+	-moz-box-shadow: -1px 0px 0px 0px #358ccb, 0px 0px 0px 1px #dfdfdf;
+	box-shadow: -1px 0px 0px 0px #358ccb, 0px 0px 0px 1px #dfdfdf;
+	border-left: 10px solid #358ccb;
+	background-color: #fdfdfd;
+	background-image: -webkit-linear-gradient(transparent 50%, rgba(69, 142, 209, 0.04) 50%);
+	background-image: -moz-linear-gradient(transparent 50%, rgba(69, 142, 209, 0.04) 50%);
+	background-image: -ms-linear-gradient(transparent 50%, rgba(69, 142, 209, 0.04) 50%);
+	background-image: -o-linear-gradient(transparent 50%, rgba(69, 142, 209, 0.04) 50%);
+	background-image: linear-gradient(transparent 50%, rgba(69, 142, 209, 0.04) 50%);
+	background-size: 3em 3em;
+	background-origin: content-box;
+	overflow: visible;
+	padding: 0;
+}
+
+code[class*="language"] {
+	max-height: inherit;
+	height: 100%;
+	padding: 0 1em;
+	display: block;
+	overflow: auto;
+}
+
+/* Margin bottom to accomodate shadow */
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background-color: #fdfdfd;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	margin-bottom: 1em;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	position: relative;
+	padding: .2em;
+	-webkit-border-radius: 0.3em;
+	-moz-border-radius: 0.3em;
+	-ms-border-radius: 0.3em;
+	-o-border-radius: 0.3em;
+	border-radius: 0.3em;
+	color: #c92c2c;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	display: inline;
+	white-space: normal;
+}
+
+pre[class*="language-"]:before,
+pre[class*="language-"]:after {
+	content: '';
+	z-index: -2;
+	display: block;
+	position: absolute;
+	bottom: 0.75em;
+	left: 0.18em;
+	width: 40%;
+	height: 20%;
+	max-height: 13em;
+	-webkit-box-shadow: 0px 13px 8px #979797;
+	-moz-box-shadow: 0px 13px 8px #979797;
+	box-shadow: 0px 13px 8px #979797;
+	-webkit-transform: rotate(-2deg);
+	-moz-transform: rotate(-2deg);
+	-ms-transform: rotate(-2deg);
+	-o-transform: rotate(-2deg);
+	transform: rotate(-2deg);
 }
-.highlight .lineno {
-    color: rgb(182, 171, 140);
-    font-weight: bold;
-}
-
-.highlight .gp {
-    font-weight: bold;
-}
-.highlight .hll {
-    background-color: #272822;
-}
-
-.highlight .c {
-    color: #75715e
-}
-
-/* Comment */
-
-.highlight .err {
-    color: #960050;
-    background-color: #1e0010
-}
-
-/* Error */
-
-.highlight .k {
-    color: #66d9ef
-}
-
-/* Keyword */
-
-.highlight .l {
-    color: #ae81ff
-}
-
-/* Literal */
-
-.highlight .n {
-    color: #f8f8f2
-}
-
-/* Name */
-
-.highlight .o {
-    color: #f92672
-}
-
-/* Operator */
-
-.highlight .p {
-    color: #f8f8f2
-}
-
-/* Punctuation */
-
-.highlight .cm {
-    color: #75715e
-}
-
-/* Comment.Multiline */
-
-.highlight .cp {
-    color: #75715e
-}
-
-/* Comment.Preproc */
-
-.highlight .c1 {
-    color: #75715e
-}
-
-/* Comment.Single */
-
-.highlight .cs {
-    color: #75715e
-}
-
-/* Comment.Special */
-
-.highlight .ge {
-    font-style: italic
-}
-
-/* Generic.Emph */
-
-.highlight .gs {
-    font-weight: bold
-}
-
-/* Generic.Strong */
-
-.highlight .kc {
-    color: #66d9ef
-}
-
-/* Keyword.Constant */
-
-.highlight .kd {
-    color: #66d9ef
-}
-
-/* Keyword.Declaration */
-
-.highlight .kn {
-    color: #f92672
-}
-
-/* Keyword.Namespace */
-
-.highlight .kp {
-    color: #66d9ef
-}
-
-/* Keyword.Pseudo */
-
-.highlight .kr {
-    color: #66d9ef
-}
-
-/* Keyword.Reserved */
-
-.highlight .kt {
-    color: #66d9ef
-}
-
-/* Keyword.Type */
-
-.highlight .ld {
-    color: #e6db74
-}
-
-/* Literal.Date */
 
-.highlight .m {
-    color: #ae81ff
+:not(pre) > code[class*="language-"]:after,
+pre[class*="language-"]:after {
+	right: 0.75em;
+	left: auto;
+	-webkit-transform: rotate(2deg);
+	-moz-transform: rotate(2deg);
+	-ms-transform: rotate(2deg);
+	-o-transform: rotate(2deg);
+	transform: rotate(2deg);
 }
 
-/* Literal.Number */
-
-.highlight .s {
-    color: #e6db74
-}
-
-/* Literal.String */
-
-.highlight .na {
-    color: #a6e22e
-}
-
-/* Name.Attribute */
-
-.highlight .nb {
-    color: #f8f8f2
-}
-
-/* Name.Builtin */
-
-.highlight .nc {
-    color: #a6e22e
-}
-
-/* Name.Class */
-
-.highlight .no {
-    color: #66d9ef
-}
-
-/* Name.Constant */
-
-.highlight .nd {
-    color: #a6e22e
+.token.comment,
+.token.block-comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #7D8B99;
 }
-
-/* Name.Decorator */
-
-.highlight .ni {
-    color: #f8f8f2
-}
-
-/* Name.Entity */
-
-.highlight .ne {
-    color: #a6e22e
-}
-
-/* Name.Exception */
-
-.highlight .nf {
-    color: #a6e22e
-}
-
-/* Name.Function */
-
-.highlight .nl {
-    color: #f8f8f2
-}
-
-/* Name.Label */
-
-.highlight .nn {
-    color: #f8f8f2
-}
-
-/* Name.Namespace */
 
-.highlight .nx {
-    color: #a6e22e
+.token.punctuation {
+	color: #5F6364;
 }
 
-/* Name.Other */
-
-.highlight .py {
-    color: #f8f8f2
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.function-name,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #c92c2c;
 }
-
-/* Name.Property */
 
-.highlight .nt {
-    color: #f92672
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.function,
+.token.builtin,
+.token.inserted {
+	color: #2f9c0a;
 }
 
-/* Name.Tag */
-
-.highlight .nv {
-    color: #f8f8f2
+.token.operator,
+.token.entity,
+.token.url,
+.token.variable {
+	color: #a67f59;
+	background: rgba(255, 255, 255, 0.5);
 }
-
-/* Name.Variable */
 
-.highlight .ow {
-    color: #f92672
+.token.atrule,
+.token.attr-value,
+.token.keyword,
+.token.class-name {
+	color: #1990b8;
 }
 
-/* Operator.Word */
-
-.highlight .w {
-    color: #f8f8f2
+.token.regex,
+.token.important {
+	color: #e90;
 }
-
-/* Text.Whitespace */
 
-.highlight .mf {
-    color: #ae81ff
+.language-css .token.string,
+.style .token.string {
+	color: #a67f59;
+	background: rgba(255, 255, 255, 0.5);
 }
 
-/* Literal.Number.Float */
-
-.highlight .mh {
-    color: #ae81ff
+.token.important {
+	font-weight: normal;
 }
-
-/* Literal.Number.Hex */
 
-.highlight .mi {
-    color: #ae81ff
+.token.bold {
+	font-weight: bold;
 }
-
-/* Literal.Number.Integer */
-
-.highlight .mo {
-    color: #ae81ff
+.token.italic {
+	font-style: italic;
 }
 
-/* Literal.Number.Oct */
-
-.highlight .sb {
-    color: #e6db74
+.token.entity {
+	cursor: help;
 }
-
-/* Literal.String.Backtick */
 
-.highlight .sc {
-    color: #e6db74
+.namespace {
+	opacity: .7;
 }
 
-/* Literal.String.Char */
+@media screen and (max-width: 767px) {
+	pre[class*="language-"]:before,
+	pre[class*="language-"]:after {
+		bottom: 14px;
+		-webkit-box-shadow: none;
+		-moz-box-shadow: none;
+		box-shadow: none;
+	}
 
-.highlight .sd {
-    color: #e6db74
 }
 
-/* Literal.String.Doc */
-
-.highlight .s2 {
-    color: #e6db74
+/* Plugin styles */
+.token.tab:not(:empty):before,
+.token.cr:before,
+.token.lf:before {
+	color: #e0d7d1;
 }
-
-/* Literal.String.Double */
 
-.highlight .se {
-    color: #ae81ff
+/* Plugin styles: Line Numbers */
+pre[class*="language-"].line-numbers {
+	padding-left: 0;
 }
 
-/* Literal.String.Escape */
-
-.highlight .sh {
-    color: #e6db74
+pre[class*="language-"].line-numbers code {
+	padding-left: 3.8em;
 }
-
-/* Literal.String.Heredoc */
 
-.highlight .si {
-    color: #e6db74
+pre[class*="language-"].line-numbers .line-numbers-rows {
+	left: 0;
 }
 
-/* Literal.String.Interpol */
-
-.highlight .sx {
-    color: #e6db74
+/* Plugin styles: Line Highlight */
+pre[class*="language-"][data-line] {
+	padding-top: 0;
+	padding-bottom: 0;
+	padding-left: 0;
 }
-
-/* Literal.String.Other */
-
-.highlight .sr {
-    color: #e6db74
+pre[data-line] code {
+	position: relative;
+	padding-left: 4em;
 }
-
-/* Literal.String.Regex */
-
-.highlight .s1 {
-    color: #e6db74
+pre .line-highlight {
+	margin-top: 0;
 }
-
-/* Literal.String.Single */
 
-.highlight .ss {
-    color: #e6db74
+pre[data-line] {
+	position: relative;
+	padding: 1em 0 1em 3em;
 }
 
-/* Literal.String.Symbol */
+.line-highlight {
+	position: absolute;
+	left: 0;
+	right: 0;
+	padding: inherit 0;
+	margin-top: 1em; /* Same as .prism’s padding-top */
 
-.highlight .bp {
-    color: #f8f8f2
-}
+	background: hsla(24, 20%, 50%,.08);
+	background: -moz-linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
+	background: -webkit-linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
+	background: -o-linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
+	background: linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
 
-/* Name.Builtin.Pseudo */
+	pointer-events: none;
 
-.highlight .vc {
-    color: #f8f8f2
+	line-height: inherit;
+	white-space: pre;
 }
-
-/* Name.Variable.Class */
 
-.highlight .vg {
-    color: #f8f8f2
-}
+	.line-highlight:before,
+	.line-highlight[data-end]:after {
+		content: attr(data-start);
+		position: absolute;
+		top: .4em;
+		left: .6em;
+		min-width: 1em;
+		padding: 0 .5em;
+		background-color: hsla(24, 20%, 50%,.4);
+		color: hsl(24, 20%, 95%);
+		font: bold 65%/1.5 sans-serif;
+		text-align: center;
+		vertical-align: .3em;
+		border-radius: 999px;
+		text-shadow: none;
+		box-shadow: 0 1px white;
+	}
 
-/* Name.Variable.Global */
+	.line-highlight[data-end]:after {
+		content: attr(data-end);
+		top: auto;
+		bottom: .4em;
+	}
 
-.highlight .vi {
-    color: #f8f8f2
+pre.line-numbers {
+	position: relative;
+	padding-left: 3.8em;
+	counter-reset: linenumber;
 }
-
-/* Name.Variable.Instance */
 
-.highlight .il {
-    color: #ae81ff
+pre.line-numbers > code {
+	position: relative;
 }
-
-/* Literal.Number.Integer.Long */
-
-.highlight .gh {}
 
-/* Generic Heading & Diff Header */
+.line-numbers .line-numbers-rows {
+	position: absolute;
+	pointer-events: none;
+	top: 0;
+	font-size: 100%;
+	left: -3.8em;
+	width: 3em; /* works for line-numbers below 1000 lines */
+	letter-spacing: -1px;
+	border-right: 1px solid #999;
 
-.highlight .gu {
-    color: #75715e;
-}
-
-/* Generic.Subheading & Diff Unified/Comment? */
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 
-.highlight .gd {
-    color: #f92672;
 }
 
-/* Generic.Deleted & Diff Deleted */
-
-.highlight .gi {
-    color: #a6e22e;
-}
+	.line-numbers-rows > span {
+		pointer-events: none;
+		display: block;
+		counter-increment: linenumber;
+	}
 
-/* Generic.Inserted & Diff Inserted */
+		.line-numbers-rows > span:before {
+			content: counter(linenumber);
+			color: #999;
+			display: block;
+			padding-right: 0.8em;
+			text-align: right;
+		}
