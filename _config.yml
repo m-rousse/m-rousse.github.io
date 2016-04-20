@@ -10,9 +10,13 @@ github_username:  m-rousse
 linkedin_username:  mathieurousse
 debug: true
 charset: utf-8
+gems:
+  - jekyll-gist
 
 # Build settings
 markdown: kramdown
-
+kramdown:
+  input: GFM
+  
 exclude: ['css','_scss','node_modules','package.json','GruntFile.js','Readme.md', 'js']
 keep_files: ['_site/css', '_site/js']

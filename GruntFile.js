@@ -7,6 +7,8 @@ module.exports = function (grunt) {
     // Load all Grunt tasks that are listed in package.json automagically
     require('load-grunt-tasks')(grunt);
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-image-resize');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -25,7 +27,7 @@ module.exports = function (grunt) {
         watch: {
             sass: {
                 files: ['_sass/**/*.{scss,sass}'],
-                tasks: ['sass']
+                tasks: ['buildcss']
             },
             uglify: {
                 files: ['js/*.js'],
@@ -45,8 +47,15 @@ module.exports = function (grunt) {
             build: {
                 files: [{
                     expand: true,
-                    cwd: '_sass/',
-                    src: ['**/*.{scss,sass}','node_modules/tether/dist/css/tether.min.css','node_modules/tether/dist/css/tether-theme-basic.min.css'],
+                    flatten: true,
+                    filter: 'isFile',
+                    src: [
+                        '_sass/**/*.{scss,sass}',
+                        '_sass/syntax.css',
+                        'node_modules/tether/dist/css/tether.min.css',
+                        'node_modules/tether/dist/css/tether-theme-basic.min.css',
+                        'node_modules/lightbox2/dist/css/lightbox.min.css'
+                    ],
                     dest: '_site/css',
                     ext: '.css'
                 }]
@@ -59,7 +68,7 @@ module.exports = function (grunt) {
             },
             build: {
                 files: {
-                    '_site/js/<%= pkg.name %>.min.js': ['node_modules/jquery/dist/jquery.min.js','node_modules/tether/dist/js/tether.min.js','js/bootstrap.min.js','js/main.js']
+                    '_site/js/<%= pkg.name %>.min.js': ['node_modules/jquery/dist/jquery.min.js','node_modules/tether/dist/js/tether.min.js','js/bootstrap.min.js','js/main.js','node_modules/lightbox2/dist/js/lightbox.min.js']
                 }
             }
         },
@@ -67,10 +76,11 @@ module.exports = function (grunt) {
         // run tasks in parallel
         concurrent: {
             serve: [
-                'sass',
+                'buildcss',
                 'uglify',
+                ['image_resize', 'copy:build'],
                 'watch',
-                'shell:jekyllServe'
+                'shell:jekyllServe',
             ],
             options: {
                 logConcurrentOutput: true
@@ -78,12 +88,19 @@ module.exports = function (grunt) {
         },
 
         copy: {
+            build: {
+                flatten: true,
+                expand: true,
+                src: ['node_modules/lightbox2/dist/images/**'],
+                dest: '_site/images',
+                filter: 'isFile',
+            },
             deploy:
                 {
                     expand: true,
                     cwd: '_site',
                     src: ['**'],
-                    dest: '/srv/math/'
+                    dest: 'D:/Softs/wamp64/www/blog'
                 }
         },
 
@@ -93,9 +110,41 @@ module.exports = function (grunt) {
             },
             deploy: {
                 src: ['/srv/math/*']
+            },
+            build: {
+                src: ['_site/css/*.map']
+            },
+            css: {
+                src: []
             }
-        }
+        },
 
+        cssmin: {
+            build: {
+                files: {
+                    '_site/css/main.min.css' : ['_site/css/lightbox.css','_site/css/tether.css','_site/css/syntax.css','_site/css/tether-theme-basic.css','_site/css/main.css']
+                }
+            }
+        },
+
+        image_resize: {
+            thumbs: {
+                options: {
+                    width: 400,
+                    height: 400,
+                    overwrite: true
+                },
+
+                files: [{
+                    expand: true,
+                    cwd: "images/",
+                    src: "**/*.png",
+                    dest: "thumbs/",
+                    ext: ".png",
+                    extDot: "first"
+                }]
+            },
+        }
     });
 
     // Register the grunt serve task
@@ -106,8 +155,20 @@ module.exports = function (grunt) {
     // Register the grunt build task
     grunt.registerTask('build', [
         'shell:jekyllBuild',
+        'image_resize',
+        'copy:build',
         'sass',
-        'uglify'
+        'cssmin',
+        'clean:build',
+        'clean:css',
+        'uglify',
+    ]);
+
+    grunt.registerTask('buildcss', [
+        'sass',
+        'cssmin',
+        'clean:build',
+        'clean:css',
     ]);
 
     grunt.registerTask('bd', [

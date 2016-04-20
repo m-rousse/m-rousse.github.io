@@ -1,0 +1,49 @@
+---
+layout: post
+title:  "sCTF.io Q1"
+date:   2016-04-19 22:34:18 +0200
+categories: ctf
+---
+
+A week ago, I took part of the sCTF.io 2016 Q1 with a friend. This is the first time I take seriously part to a CTF. We managed to score 1700 points and ranked 7th of about 700 teams (Funpetitor for us as we do not live in US).
+
+{% lightbox sctfio-2016q1.png %}
+
+Here are a few notes about problems we solved and found interesting.
+
+### Rev1
+
+I used IDA during the challenge, but as I want to practice with radare2 the write up will be using radare2.
+
+First, I ran the program to have an idea of what to look for.
+
+{% highlight bash linenos %}
+root@kali:~/sCTF/Rev1# ./rev1
+What is the magic password?
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+{% endhighlight %}
+
+So it does not print anything if the password is wrong. It's time to fire radare2 !
+
+{% gist m-rousse/fc268c82b2e82026ab965499b3f855f5 %}
+
+The steps :
+
+  - `aaa` : First, analyze all the program fonctions
+  - `ìz` : Then print all the strings of the program
+  - `pd 10 @ 0x00400744-5`: We show the disassembly around one of the strings`. We see that "What is the magic password" is used in `main` at 0x00400677
+  - `s 0x00400677` : So we move to 0x00400677
+  - `pdf @ 0x00400677` : And we print the disassembly of the function (main).
+  - There, we can see the password is compared to `0x5b74` as a numerical value. The password is then this value in decimal : 23412
+  - We found our password, let's feed it to the binary :
+
+{% highlight bash linenos %}
+root@kali:~/sCTF/Rev1# ./rev1
+What is the magic password?
+23412
+Correct! Your flag is: h4x0r!!!
+{% endhighlight %}
+
+We did it !
+
+`flag : sctf{h4x0r!!!}`
