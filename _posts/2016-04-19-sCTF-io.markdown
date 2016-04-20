@@ -31,11 +31,12 @@ The steps :
 
   - `aaa` : First, analyze all the program fonctions
   - `ìz` : Then print all the strings of the program
-  - `pd 10 @ 0x00400744-5`: We show the disassembly around one of the strings`. We see that "What is the magic password" is used in `main` at 0x00400677
+  - `pd 10 @ 0x00400744-5`: We show the disassembly around one of the strings. We see that "What is the magic password" is used in `main` at 0x00400677
   - `s 0x00400677` : So we move to 0x00400677
   - `pdf @ 0x00400677` : And we print the disassembly of the function (main).
   - There, we can see the password is compared to `0x5b74` as a numerical value. The password is then this value in decimal : 23412
-  - We found our password, let's feed it to the binary :
+
+We found our password, let's feed it to the binary :
 
 {% highlight bash linenos %}
 root@kali:~/sCTF/Rev1# ./rev1
