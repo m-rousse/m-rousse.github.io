@@ -12,7 +12,6 @@ debug: true
 charset: utf-8
 gems:
   - jekyll-gist
-  - jekyll-prism-plugin
 
 # Build settings
 markdown: kramdown
