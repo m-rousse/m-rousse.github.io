@@ -15,7 +15,6 @@
     }
 }
 
-@import url(https://fonts.googleapis.com/css?family=Work+Sans:400,300,600,500&subset=latin,latin-ext);
 
 /* Space out content a bit */
 body {
@@ -101,4 +100,30 @@ p {
     .jumbotron {
         border-bottom: 0;
     }
+}
+
+.title {
+    text-align: center;
+    font-variant: small-caps;
+    font-weight: 500;
+    font-size: 40px;
+}
+
+.title-date {
+    text-align: center;
+}
+
+ul#index-post-list li.post-item:after {
+    content: "";
+    display: block;
+    height: 1px;
+    width: 80%;
+    margin: 10px;
+    background: rgba(0, 1, 84, 0.4);
+    margin-left: 10%;
+    margin-top: 40px;
+}
+
+ul#index-post-list li.post-item:last-child:after {
+    height: 0px;
 }

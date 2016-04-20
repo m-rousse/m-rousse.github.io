@@ -4,13 +4,13 @@ layout: default
 
 <div class="container">
 
-  <ul class="list-unstyled">
+  <ul class="list-unstyled" id="index-post-list">
     {% for post in site.posts %}
-      <li>
-        <h3>
+      <li class="post-item">
+        <h3 class="title">
           <a class="" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
         </h3>
-        <small class="text-muted">{{ post.date | date: "%b %-d, %Y" }}</small>
+        <p class="title-date"><small class="text-muted">{{ post.date | date: "%b %-d, %Y" }}</small></p>
 
         {{ post.content | markdownify }}
 
