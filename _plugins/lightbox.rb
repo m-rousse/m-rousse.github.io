@@ -7,7 +7,7 @@ module Jekyll
     end
 
     def render(context)
-      "<a href=\"/images/#{@text}\" data-lightbox=\"lightbox-image\"><img src=\"/thumbs/#{@text}\" /></a>"
+      "<div class=\"lightboximg\"><a href=\"/images/#{@text}\" data-lightbox=\"lightbox-image\" class=\"lightboximg\"><img src=\"/thumbs/#{@text}\" class=\"lightboximg\"/></a></div>"
     end
   end
 end

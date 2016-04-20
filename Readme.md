@@ -8,5 +8,5 @@ My professional blog. In there should only be articles with a meaning for my pro
 - Add sCTF Write Ups
 - Add *PUBLIC* CV
 - Verify that all files are mandatory
-- Enable compression (server-side)
+- Enable caching (server header for caching client-side)
 - Redact "Projects" and add a page for each one of them

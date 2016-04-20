@@ -127,3 +127,12 @@ ul#index-post-list li.post-item:after {
 ul#index-post-list li.post-item:last-child:after {
     height: 0px;
 }
+
+img.lightboximg {
+    max-width: 100%;
+}
+
+div.lightboximg {
+    text-align: center;
+    padding: 10px 0;
+}
