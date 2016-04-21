@@ -43,7 +43,7 @@ vaddr=0x00400763 paddr=0x00000763 ordinal=001 sz=26 len=25 section=.rodata type=
 |      |   ; DATA XREF from 0x00400688 (sym.main)
        |   0x00400760    256400436f     and eax, 0x6f430064
 |      |   ; DATA XREF from 0x004006a8 (sym.main)
-       |   ;-- str.Correct__Your_flag_is:__s:
+       |   ;-- str.Correct__Your_flag_is:__s:                 ; ignore this__
        |   0x00400763     .string "Correct! Your flag is: %s" ; len=26
            ;-- section_end..rodata:
            0x0040077d    0000           add byte [rax], al
@@ -110,3 +110,73 @@ Correct! Your flag is: h4x0r!!!
 We did it !
 
 `flag : sctf{h4x0r!!!}`
+
+### Ducks
+
+Write Up To-Do, the website is currently off-line. (If I remember well, I added an input to the form).
+
+### Lengthy Lingo
+
+A quick overview of the file gives us no hint, except that the lines are quite lengthy. Looking at the length, we see that the length of the lines is always under 127, and could always be a printable ascii char.
+
+We wrote this code to convert the length of the lines to characters :
+
+<div><pre class="language-php line-numbers">
+<code class="language-php">$file = file_get_contents("encrypted.dat");
+$file = explode("\n", $file);
+foreach($file as $line){
+  echo chr(strlen($line));
+}
+echo "\n";
+</code></pre></div>
+
+Which gave us the `flag : sctf{101_th3_numb3r5_d1dn'7_3v3n_m4tt3r}`
+
+### Rain or Shine
+
+For this one, I realized my method was wrong, but I could not think of any other way of doing it :
+
+The file is a record of the rain in the wav format. Let's see if the file contains other data :
+
+<div><pre class="language-bash line-numbers">
+<code class="language-bash">root@kali:~/sCTF/Rain# binwalk rain.wav
+
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+152318        0x252FE         MySQL ISAM compressed data file Version 2
+586865        0x8F471         MySQL ISAM compressed data file Version 5
+5669358       0x5681EE        MySQL ISAM index file Version 1
+5831936       0x58FD00        TIFF image data, little-endian offset of first image directory: 8
+5832467       0x58FF13        Unix path: /www.w3.org/1999/02/22-rdf-syntax-ns#">
+5832624       0x58FFB0        Unix path: /purl.org/dc/elements/1.1/"
+5832748       0x59002C        Unix path: /ns.adobe.com/xap/1.0/mm/"
+5832806       0x590066        Unix path: /ns.adobe.com/xap/1.0/sType/ResourceEvent#">
+</code></pre></div>
+
+There we see that there is a TIFF header at 0x58FD00. So I extract it with `dd if=rain.wav of=writeup.tiff bs=1 skip=5831936` which gives me this image :
+
+{% lightbox sctfio-2016q1-rain-scrambled.png %}
+
+We can clearly recognize a QR Code, but it looks scrambled.
+
+After a few minutes of paint, I achieved reconstructing the original QR Code which gives me the `flag : sctf{5t3g0n4gr4phy_i5_fun_r1t3?}`
+
+### Control Panel
+
+// Server down, write up later !
+
+### Musical Penguins
+
+The file is a TuxGuitar tablature. Once opened, we see only two notes, by group of 15 with 5 notes per measure. It looks like morse, so we wanted to transcript this to dots for the E and dashes for the C notes. As they are a lot of notes, we decided to do this automagically.
+
+- Export the file to xml
+- Open it with vim
+- Let's remove all useless lines: `:%v/fret/d`
+- Remove everything that is not a number: `:%s/<fret>//g` and `:%s/<\/fret>//g` and `:%s/\n//g`
+- There is a 5 in the middle that stands for a 1 (measure 149): `:%s/5/1/g`
+- Replace 2 with dot and 1 with dash: `:%s/2/./g` and `:%s/1/-/g`
+- Space every group of 5 char : `qa` four times `right arrow` then `a <space> <esc> <right arrow> q` and finally `145@a` (145 because they are 730 char).
+- Using an online morse decoder, we then have a string of numbers between 0 and 6.
+- Using the same method than above, we can cut the string into groups of 3 numbers and then convert them from base 7 to base 16 and read the ascii corresponding char
+
+Finally, the `flag : sctf{1_u53d_t0_m4k3_mu51c_w1th_th15_4ll_th3_t1m3}`
