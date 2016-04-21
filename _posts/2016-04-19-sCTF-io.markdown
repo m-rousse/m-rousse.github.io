@@ -13,7 +13,7 @@ Here are a few notes about problems we solved and found interesting.
 
 ### Rev1
 
-I used IDA during the challenge, but as I want to practice with radare2 the write up will be using radare2.
+I used IDA during the challenge, but as I want to practice with [Radare2](http://www.radare.org/r/) the write up will be using radare2.
 
 First, I ran the program to have an idea of what to look for.
 
@@ -180,3 +180,131 @@ The file is a TuxGuitar tablature. Once opened, we see only two notes, by group 
 - Using the same method than above, we can cut the string into groups of 3 numbers and then convert them from base 7 to base 16 and read the ascii corresponding char
 
 Finally, the `flag : sctf{1_u53d_t0_m4k3_mu51c_w1th_th15_4ll_th3_t1m3}`
+
+### Rev2
+
+Once again we'll use Radare2 :
+
+<div><pre class="language-nasm line-numbers">
+<code class="language-nasm">[0x00400560]> aaa
+[0x00400560]> iz
+vaddr=0x004007a4 paddr=0x000007a4 ordinal=000 sz=28 len=27 section=.rodata type=a string=What is the magic password?
+vaddr=0x004007c3 paddr=0x000007c3 ordinal=001 sz=26 len=25 section=.rodata type=a string=Correct! Your flag is: %d
+
+[0x00400560]> pd 10 @ 0x004007a4 -5
+|           0x0040079f    0001           add byte [rcx], al
+|           ;-- sym._IO_stdin_used:
+|           ;-- section..rodata:
+|           0x004007a0    0100           add dword [rax], eax          ; [14] va=0x004007a0 pa=0x000007a0 sz=61 vsz=61 rwx=-r-- .rodata
+|           0x004007a2    0200           add al, byte [rax]
+|           ; DATA XREF from 0x0040066c (sym.main)
+|           ;-- str.What_is_the_magic_password_:
+|           0x004007a4     .string "What is the magic password?" ; len=28
+|     |||   ; DATA XREF from 0x0040067d (sym.main)
+      |||   0x004007c0    256400436f     and eax, 0x6f430064
+|     |||   ; DATA XREF from 0x00400702 (sym.main)
+      |||   ;-- str.Correct__Your_flag_is:__d:                 ; ignore me__
+      |||   0x004007c3     .string "Correct! Your flag is: %d" ; len=26
+   |||||    ;-- section_end..rodata:
+   |||||    0x004007dd    0000           add byte [rax], al
+   |||||    0x004007df    0001           add byte [rcx], al
+   |||||    ;-- section..eh_frame_hdr:
+   |||||    0x004007e0    011b           add dword [rbx], ebx          ; [15] va=0x004007e0 pa=0x000007e0 sz=52 vsz=52 rwx=-r-- .eh_frame_hdr
+   |||||    0x004007e2    033b           add edi, dword [rbx]
+[0x00400560]> s 0x00400702
+[0x00400702]> pdf @ main
+/ (fcn) sym.main 194
+|          ; arg int arg_64043_5  @ rbp+0x7d15d
+|          ; var int local_0_4    @ rbp-0x4
+|          ; var int local_1      @ rbp-0x8
+|          ; DATA XREF from 0x0040057d (entry0)
+|          ;-- main:
+|          ;-- sym.main:
+|          0x00400656    55             push rbp
+|          0x00400657    4889e5         mov rbp, rsp
+|          0x0040065a    4883ec10       sub rsp, 0x10
+|          0x0040065e    c745f8000000.  mov dword [rbp-local_1], 0
+|          0x00400665    c745fc5dd107.  mov dword [rbp-local_0_4], 0x7d15d  ; [0x7d15d:4]=-1
+|          0x0040066c    bfa4074000     mov edi, str.What_is_the_magic_password_ ; "What is the magic password?" @ 0x4007a4
+|          0x00400671    e8bafeffff     call sym.imp.puts
+|            ^- sym.imp.puts()
+|          0x00400676    488d45f8       lea rax, qword [rbp-local_1]
+|          0x0040067a    4889c6         mov rsi, rax
+|          0x0040067d    bfc0074000     mov edi, 0x4007c0
+|          0x00400682    b800000000     mov eax, 0
+|          0x00400687    e8c4feffff     call sym.imp.scanf
+|            ^- sym.imp.scanf()
+|          0x0040068c    8b45f8         mov eax, dword [rbp-local_1]
+|          0x0040068f    3d83da0d03     cmp eax, 0x30dda83
+|      ,=< 0x00400694    757b           jne 0x400711
+|      |   0x00400696    8b45f8         mov eax, dword [rbp-local_1]
+              ... lot of ops ...
+|      |   0x00400700    89c6           mov esi, eax
+|      |   0x00400702    bfc3074000     mov edi, str.Correct__Your_flag_is:__d ; "Correct! Your flag is: %d" @ 0x4007c3
+|      |   0x00400707    b800000000     mov eax, 0
+|      |   0x0040070c    e8fffdffff     call sym.imp.printf
+|      |     ^- sym.imp.printf()
+|      |   ; JMP XREF from 0x00400694 (sym.main)
+|      `-> 0x00400711    b800000000     mov eax, 0
+|          0x00400716    c9             leave
+\          0x00400717    c3             ret
+
+</code></pre></div>
+
+We used the same way we used for Rev1 : look for strings, look where they are used, read the code around.
+
+This time the code was very easy to understand : right after the `scanf` there is a comparison then a jump. It jumps only if the password is not equal to `0x30dda83`. So we feed it as a base 10 number to the binary.
+
+<div><pre class="language-bash line-numbers">
+<code class="language-bash">root@kali:~/sCTF/Rev2# ./rev2
+What is the magic password?
+51239555
+Correct! Your flag is: 51196695
+</code></pre></div>
+
+That's it : `flag : sctf{51196695}`
+
+### Secure Text Saver
+
+We have a jar file which displays a login/register page, once logged in, we can set text that will be saved (securely).
+
+A jar file is an archive, so we can unzip it and try to find useful informations into the files.
+
+<div><pre class="language-bash line-numbers">
+<code class="language-bash">root@kali:/tmp/jar# unzip Secure_Text_Saver.jar
+Archive:  Secure_Text_Saver.jar
+  inflating: META-INF/MANIFEST.MF
+  inflating: Account.class
+   creating: com/
+   creating: com/intellij/
+   creating: com/intellij/uiDesigner/
+   creating: com/intellij/uiDesigner/core/
+  inflating: com/intellij/uiDesigner/core/AbstractLayout.class
+  inflating: com/intellij/uiDesigner/core/DimensionInfo.class
+  inflating: com/intellij/uiDesigner/core/GridConstraints.class
+  inflating: com/intellij/uiDesigner/core/GridLayoutManager.class
+  inflating: com/intellij/uiDesigner/core/HorizontalInfo.class
+  inflating: com/intellij/uiDesigner/core/LayoutState.class
+  inflating: com/intellij/uiDesigner/core/Spacer.class
+  inflating: com/intellij/uiDesigner/core/SupportCode$TextWithMnemonic.class
+  inflating: com/intellij/uiDesigner/core/SupportCode.class
+  inflating: com/intellij/uiDesigner/core/Util.class
+  inflating: com/intellij/uiDesigner/core/VerticalInfo.class
+  inflating: Login_Page.class
+root@kali:/tmp/jar# ls
+Account.class  com  Login_Page.class  META-INF  Secure_Text_Saver.jar
+root@kali:/tmp/jar# strings Login_Page.class
+... lot of text ...
+Login_Page.java
+Account
+        ztaylor54
+]!xME}behA8qjM~T
+javax/swing/JFrame
+Login | Sign Up
+... lot of text ...
+root@kali:/tmp/jar#
+</code></pre></div>
+
+While reading the strings found in the `Login_Page.class` file, we found the nickname of the author of the challenge, we tried this username and the following line as password. And it worked !
+
+`flag : sctf{w0w_th4t_w45_pr377y_e45y}`
