@@ -17,11 +17,10 @@ I used IDA during the challenge, but as I want to practice with [Radare2](http:/
 
 First, I ran the program to have an idea of what to look for.
 
-<div><pre class="language-bash line-numbers">
-<code class="language-bash">root@kali:~/sCTF/Rev1# ./rev1
+<div><pre class="command-line" data-user="mr" data-host="sopasoda" data-output="2-99">
+<code class="language-bash">./rev1
 What is the magic password?
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-</code></pre></div>
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</code></pre></div>
 
 So it does not print anything if the password is wrong. It's time to fire radare2 !
 
@@ -100,12 +99,11 @@ The steps :
 
 We found our password, let's feed it to the binary :
 
-<div><pre class="language-bash line-numbers">
-<code class="language-bash">root@kali:~/sCTF/Rev1# ./rev1
+<div><pre class="command-line" data-user="mr" data-host="sopasoda" data-output="2-99">
+<code class="language-bash">./rev1
 What is the magic password?
 23412
-Correct! Your flag is: h4x0r!!!
-</code></pre></div>
+Correct! Your flag is: h4x0r!!!</code></pre></div>
 
 We did it !
 
@@ -138,8 +136,8 @@ For this one, I realized my method was wrong, but I could not think of any other
 
 The file is a record of the rain in the wav format. Let's see if the file contains other data :
 
-<div><pre class="language-bash line-numbers">
-<code class="language-bash">root@kali:~/sCTF/Rain# binwalk rain.wav
+<div><pre class="command-line" data-user="mr" data-host="sopasoda" data-output="2-12">
+<code class="language-bash">binwalk rain.wav
 
 DECIMAL       HEXADECIMAL     DESCRIPTION
 --------------------------------------------------------------------------------
@@ -150,8 +148,7 @@ DECIMAL       HEXADECIMAL     DESCRIPTION
 5832467       0x58FF13        Unix path: /www.w3.org/1999/02/22-rdf-syntax-ns#">
 5832624       0x58FFB0        Unix path: /purl.org/dc/elements/1.1/"
 5832748       0x59002C        Unix path: /ns.adobe.com/xap/1.0/mm/"
-5832806       0x590066        Unix path: /ns.adobe.com/xap/1.0/sType/ResourceEvent#">
-</code></pre></div>
+5832806       0x590066        Unix path: /ns.adobe.com/xap/1.0/sType/ResourceEvent#"></code></pre></div>
 
 There we see that there is a TIFF header at 0x58FD00. So I extract it with `dd if=rain.wav of=writeup.tiff bs=1 skip=5831936` which gives me this image :
 
@@ -255,12 +252,11 @@ We used the same way we used for Rev1 : look for strings, look where they are us
 
 This time the code was very easy to understand : right after the `scanf` there is a comparison then a jump. It jumps only if the password is not equal to `0x30dda83`. So we feed it as a base 10 number to the binary.
 
-<div><pre class="language-bash line-numbers">
-<code class="language-bash">root@kali:~/sCTF/Rev2# ./rev2
+<div><pre class="command-line" data-user="mr" data-host="sopasoda" data-output="2-99">
+<code class="language-bash">./rev2
 What is the magic password?
 51239555
-Correct! Your flag is: 51196695
-</code></pre></div>
+Correct! Your flag is: 51196695</code></pre></div>
 
 That's it : `flag : sctf{51196695}`
 
@@ -270,8 +266,8 @@ We have a jar file which displays a login/register page, once logged in, we can 
 
 A jar file is an archive, so we can unzip it and try to find useful informations into the files.
 
-<div><pre class="language-bash line-numbers">
-<code class="language-bash">root@kali:/tmp/jar# unzip Secure_Text_Saver.jar
+<div><pre class="command-line" data-user="mr" data-host="sopasoda" data-output="2-20, 22, 24-33">
+<code class="language-bash">unzip Secure_Text_Saver.jar
 Archive:  Secure_Text_Saver.jar
   inflating: META-INF/MANIFEST.MF
   inflating: Account.class
@@ -291,9 +287,9 @@ Archive:  Secure_Text_Saver.jar
   inflating: com/intellij/uiDesigner/core/Util.class
   inflating: com/intellij/uiDesigner/core/VerticalInfo.class
   inflating: Login_Page.class
-root@kali:/tmp/jar# ls
+ls
 Account.class  com  Login_Page.class  META-INF  Secure_Text_Saver.jar
-root@kali:/tmp/jar# strings Login_Page.class
+strings Login_Page.class
 ... lot of text ...
 Login_Page.java
 Account
@@ -301,9 +297,7 @@ Account
 ]!xME}behA8qjM~T
 javax/swing/JFrame
 Login | Sign Up
-... lot of text ...
-root@kali:/tmp/jar#
-</code></pre></div>
+... lot of text ...</code></pre></div>
 
 While reading the strings found in the `Login_Page.class` file, we found the nickname of the author of the challenge, we tried this username and the following line as password. And it worked !
 
