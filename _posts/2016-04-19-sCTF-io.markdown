@@ -158,10 +158,6 @@ We can clearly recognize a QR Code, but it looks scrambled.
 
 After a few minutes of paint, I achieved reconstructing the original QR Code which gives me the `flag : sctf{5t3g0n4gr4phy_i5_fun_r1t3?}`
 
-### Control Panel
-
-// Server down, write up later !
-
 ### Musical Penguins
 
 The file is a TuxGuitar tablature. Once opened, we see only two notes, by group of 15 with 5 notes per measure. It looks like morse, so we wanted to transcript this to dots for the E and dashes for the C notes. As they are a lot of notes, we decided to do this automagically.
@@ -302,3 +298,232 @@ Login | Sign Up
 While reading the strings found in the `Login_Page.class` file, we found the nickname of the author of the challenge, we tried this username and the following line as password. And it worked !
 
 `flag : sctf{w0w_th4t_w45_pr377y_e45y}`
+
+### Cookies
+
+The same way we opened the previous jar, we unzip it and look at the main class file.
+
+We then look for strings in it.
+
+<div><pre class="command-line" data-user="mr" data-host="sopasoda" data-output="2-9, 11-99">
+<code class="language-bash">unzip cookie.jar
+Archive:  cookie.jar
+  inflating: META-INF/MANIFEST.MF
+   creating: com/
+   creating: com/intellij/
+   creating: com/intellij/uiDesigner/
+   creating: com/intellij/uiDesigner/core/
+... Lot of Text ...
+  inflating: Cookie.class
+ls
+com  Cookie.class  cookie.jar  META-INF
+strings Cookie.class
+Cookie
+java/lang/Object
+Cookie.java
+... Lot of text ...
+java/io/PrintStream
+println
+ fdf87a05e2169b88a8db5a1ebc15fa50
+equals
+(Ljava/lang/Object;)Z
+success! it's working!
+... Lot of text ...</code></pre></div>
+
+A quick overview allows us to find a md5 hash. A simple search with google gives us the plain text : `thisisaverystrongpassword`
+
+We then can input this password into the application, which gives us the following flag : `flag: sctf{g3t_y0ur_h4nd_0ut_0f_my_c00k13_j4r!}`
+
+### Tracking
+
+For this challenge, we have to trilaterate a few devices' position knowing their distance from 4 satellites and the satelittes' position.
+
+In the `description.txt` file we have the equations between the position (x,y,z) and the distances (d1, d2, d3, d4) to the satellites. I rewrote those equations a little to have simple equations for the coordinates.
+
+I wrote a small script in PHP for this task :
+
+<div><pre class="language-php line-numbers">
+<code class="language-php">$data = file_get_contents("tracking.in");
+$data = explode("---------------------------------", $data);
+
+$p = 2000; // x coordinate of satellite B
+$q = 2000; // x coordinate of satellite C
+$r = 2000; // y coordinate of satellite C
+$s = 3000; // x coordinate of satellite D
+$t = 1500; // y coordinate of satellite D
+$u = 1700; // z coordinate of satellite D
+
+$data = explode("\n",$data[1]);
+array_pop($data);
+array_shift($data);
+
+$x_tot = 0;
+$y_tot = 0;
+$z_tot = 0;
+
+foreach($data as $k => $l){
+	list($d1, $d2, $d3, $d4) = explode(" ", $l);
+
+	// Compute x y and z
+	$x = ($d1*$d1 - $d2 * $d2 + $p*$p)/(2*$p);
+	$y = -1*($d3*$d3 - $d2 * $d2 - 2*$x*($p-$q) - $q * $q + $p * $p - $r * $r)/(2 * $r);
+	$z = -1*($d4*$d4 - $d1 * $d1 + 2 * $x * $s - $s * $s + 2 * $t * $y - $t * $t - $u * $u)/(2 * $u);
+
+	$x_tot += $x;
+	$y_tot += $y;
+	$z_tot += $z;
+}
+
+echo "FINAL : sctf{".ceil($x_tot/count($data)).", ".ceil($y_tot/count($data)).", ".ceil($z_tot/count($data))."}\n";</code></pre></div>
+
+Which computes the flag : `flag: sctf{537, 516, 487}`
+
+### Verticode
+
+In this challenge, we have an image with text encoded in it. Each byte is coded with a 7 bits binary code and a color. Depending of the color, the number represented by the black and white is shifted or not.
+
+I wrote two functions, one to get the shift value depending of the color of the block, another one to get the value of the number represented by the 7 bits binary code.
+
+Then I read the image from top to bottom and convert the numbers to ascii.
+
+<div><pre class="language-php line-numbers">
+<code class="language-php">function getColorCode($color){
+  $r = $color['r'];
+  $g = $color['g'];
+  $b = $color['b'];
+  $a = $color['a'];
+
+  if($r == 255 && $g == 0 && $b == 0)
+    return 0;
+  if($r == 128 && $g == 0 && $b == 128)
+    return 1;
+  if($r == 0 && $g == 0 && $b == 255)
+    return 2;
+  if($r == 0 && $g == 128 && $b == 0)
+    return 3;
+  if($r == 255 && $g == 255 && $b == 0)
+    return 4;
+  if($r == 255 && $g == 165 && $b == 0)
+    return 5;
+  echo "Erreur : $r - $g - $b\n";
+}
+
+function getCode($image, $line){
+  global $width, $ps;
+  $curwidth = $width/4*2+$ps/2;
+  $val = 0;
+  $i = 6;
+  while($curwidth < $width){
+    $color = $image->getImagePixelColor($curwidth, $line);
+    $color = $color->getColor();
+    if($color['r'] == 0)
+      $val += pow(2,$i);
+    $i--;
+    $curwidth += $ps;
+  }
+  return $val;
+}
+
+$image = new Imagick("code1.png");
+$ps = 12; // Pixel Size for code1.png;
+$width = 168;
+$height = 12900;
+
+$currentline = $ps/2;
+
+$chars = [];
+while($currentline < $height){
+  $color = $image->getImagePixelColor($width/4, $currentline);
+  $color = $color->getColor();
+  $color = getColorCode($color);
+
+  $code = getCode($image, $currentline);
+
+  //echo "Color : $color - code : $code\n";
+
+  $chars[] = chr($code-$color);
+  $currentline += $ps;
+}
+$str = implode($chars);
+echo $str;
+</code></pre></div>
+
+This scripts outputs this string :
+
+`Joe Lopo was a man of mild temperament ... too much text ... Lobo into a lair of pitch blackness found to be a parallel dimension that caus ABCiamtheflagalllowercasenojokeDEF
+anyone whose first name began with J along with M L and Q to become rather uncomfortable Joe was also suddenly introduced to undroclamaticolomphasisciousy the eccentric tapeworm with a strong morrocanaccent I mundroclamaticolomphasisciousy the eccentric tapeworm I like pizza so how are ya doin I have no idea said Joe`
+
+I added by hand spaces to make it more understandable. And we have our flag : `flag: sctf{iamtheflagalllowercasenojoke}`
+
+### Vertinet
+
+Vertinet is following the Verticode challenge as it uses the same coding for strings but we need to communicate with a server and to solve a few of them automatically to solve it.
+
+This one took a little more time as I had difficulties communicating with the server. I used the same code as in Verticode, and wrapped the main code into a new function `decode` which takes an image and outputs the decoded string. I also added a `resolve` function to split the answer I received from the server and keep only the interesting part : the image.
+
+Then I added the connection to the challenge server and the automatic resolve and answer to the server. I added logging to follow what is going on between my script and the server.
+
+<div><pre class="language-php line-numbers">
+<code class="language-php">function decode($image){
+  $geom = $image->getImageGeometry();
+  $width = $geom['width'];
+  $height = $geom['height'];
+  $ps = $width / 2 / 7;
+
+  $currentline = $ps/2;
+
+  $chars = [];
+  while($currentline < $height){
+    $color = $image->getImagePixelColor($width/4, $currentline);
+    $color = $color->getColor();
+    $color = getColorCode($color);
+
+    $code = getCode($image, $currentline, $width, $ps);
+
+    //echo "Color : $color - code : $code\n";
+
+    $chars[] = chr($code-$color);
+    $currentline += $ps;
+  }
+  $str = implode($chars);
+  return $str;
+}
+
+function resolve($html){
+  file_put_contents("data.log", "NEW DATA : \n$html\n----------------------------\n", FILE_APPEND);
+  $data = explode("'", $html);
+  $data = explode(",",$data[1]);
+  $data = $data[1];
+
+  $image = new Imagick();
+  $image->readImageBlob(base64_decode($data));
+  $reponse = decode($image);
+  return $reponse;
+}
+
+$ns = "problems1.2016q1.sctf.io";
+$host = gethostbyname($ns);
+$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+echo "Connection à $ns\n";
+socket_connect($socket, $host, 50000);
+
+while(true){
+  echo "Reception\n";
+  $data = "";
+  while($out = socket_read($socket, 2048 )){
+    $data .= $out;
+    if(substr($out,-6) == "</img>")
+      break;
+  }
+
+  $in = resolve($data);
+
+  echo "Sending an answer\n";
+  echo "Answer : $in\n";
+  socket_write($socket, $in, strlen($in));
+}
+
+echo "The END\n";
+socket_close($socket);</code></pre></div>
+
+And eventually, after 200 resolutions, I get the flag from the server (in my log file) : `flag: sctf{y0ub34tth3v3rt1c0d3}`
