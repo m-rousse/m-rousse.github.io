@@ -13,3 +13,10 @@ It is nice to have this setup, but switching between modes requires me to either
 So I tought of a system to control my RasPi and set it in the different modes I need using my smartphone and bluetooth.
 
 Look at the repo : [BluePi](https://git.rousse.me/mrousse/BluePi)
+
+The modes I want to have :
+
+- Ethernet to Wi-Fi // With routing capabilities
+- Wi-Fi to Ethernet // With routing capabilities
+- Router (DHCP, routing, with a webinterface or displays leases on the smartphone)
+- PXE Boot server
