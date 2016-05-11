@@ -5,11 +5,11 @@ date:   2016-05-08 16:11:09 +0200
 categories: sysadmin
 ---
 
-Having a room filled with computers able to boot over PXE, either a classroom or a LAN Party during sleeptime, or having a computer bios locked but with PXE before the hard drive, gave me the desire to design a system to quickly boot on a system and perform all kind of operations I needed.
+Having a room filled with computers able to boot over PXE, either a classroom or a LAN Party during sleeptime, or having a computer bios locked but with PXE before the hard drive, gave me the desire to design a computer to quickly boot on a system and perform all kind of operations I needed.
 
-So came the idea of setting up a server to boot on an already installed OS, and this OS to be a Archlinux easily updateable.
+So came the idea of setting up a server to boot on an already installed OS, and this OS to be a Archlinux easily updateable (so not a liveCD).
 
-This could be useful in order to boot quickly a cluster, automate tasks (retrieve the SAM/shadow file of a computer, install an OS, ...) and/or for trolling only.
+This could be useful in order to boot quickly a cluster, automate tasks (retrieve the SAM/shadow file of a computer, install an OS, ...) and/or for trolling.
 
 The work has been divided in three steps :
 
@@ -70,7 +70,7 @@ echo "/pxeroot   *(rw,fsid=0,no_root_squash,no_subtree_check)" > /etc/exports
 echo "/pxeroot32 *(rw,fsid=1,no_root_squash,no_subtree_check)" >> /etc/exports
 exportfs -arv
 systemctl start nfs-idmapd
-systemctl start nfs-mountd</code></pre></div>
+systemctl start nfs-mountd</code></pre></div><!--*-->
 
 The OS folders are `/pxeroot` for the 64-bits version and `/pxeroot32` for the 32-bits version of the OS.
 
@@ -133,7 +133,7 @@ Here is the diff of the changes I made. Most of the modifications here are inspi
 >       new_root)       ;;
 >       *)              cp -a /pxe_root/$i /new_root
 >       esac
-> done</code></pre></div>
+> done</code></pre></div><!--*-->
 
 Then we have to load the `net` module so we can connect to NFS share. We just need to add the module to the `MODULE="..."` variable of `/etc/mkinitcpio.conf`. Here is what my mkinitcpio conf looks like :
 
@@ -152,61 +152,24 @@ arch-chroot /pxeroot32 grub-mknetdir --net-directory=/boot --subdir=grub</code><
 
 We built the initramfs and the grub image, we configured our DHCP to load the correct grub `core.0` file. Our system is ready to rock !
 
-<!--
-secure ipxe : script over https with a
+## Optional : iPXE
 
-pacman -S arch-install-scripts
-1  echo ArchRAMNFS > /etc/hostname
-2  ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
-pacman -S arch-install-scripts dnsmasq openssh vim
-4  vim /etc/locale.gen
-5  locale-gen
-6  echo LANG=en_US.UTF-8 > /etc/locale.conf
-7  mkinitcpio -p linux
-8  passwd
-9  pacman -S grub
-11  grub-install /dev/sda
-13  cd /etc/
-15  vim dnsmasq.conf
-mkdir /pxeroot
-pacstrap -d /pxeroot base vim openssh mkinitcpio-nfs-utils nfs-utils
-16  arch-chroot /pxeroot/
-17  vim dnsmasq.conf
-18  systemctl restart dnsmasq
-34  vim exports
-36  exportfs -arv
-41  systemctl start nfs-idmapd
-42  systemctl start nfs-mountd
-51  ln -s boot/grub grub
-55  vim grub/grub.cfg
-56  vim etc/mkinitcpio.conf
-85  systemctl enable sshd
-92  grub-mkconfig > grub.cfg
-93  vim grub.cfg
-97  pacman -S arch-install-scripts
-101  mkdir /pxeroot
-103  pacstrap -d /pxeroot base mkinitcpio-nfs-utils nfs-utils vim openssh dhclient
-105  pacman -S dnsmasq
-106  cd /etc
-107  ls
-108  vim dnsmasq.conf
-114  ip addr add 10.239.0.1/24 dev enp0s3
-115  systemctl start dnsmasq
-115  systemctl status dnsmasq
-116  journalctl -xfn --unit dnsmasq
-117  systemctl enable dnsmasq
-118  reboot
-119  ip addr
-120  dhcpcd enp0s3
-122  pacman -S openssh
-123  vim /etc/ssh/sshd_config
-124  systemctl start sshd
-138  arch-chroot /pxeroot/
-139  arch-chroot /pxeroot/ mkinitcpio -p linux
-148  vim /pxeroot/boot/grub/grub.cfg
-156  vim /pxeroot/usr/lib/initcpio/init
-157  arch-chroot /pxeroot/ mkinitcpio -p linux
--->
+Once I finished this setup and successfully tested it in virtual environment, I tried it on an old computer which turned out to not have PXE support. [iPXE](http://ipxe.org/) is a solution for that kind of problems and allows us to create a bootable usb stick capable of loading a PXE configuration and boot from it.
+
+To use iPXE, we have to download the sources and build them :
+
+<div><pre class="command-line" data-user="mr" data-host="server" data-output="">
+<code class="language-bash">git clone git://git.ipxe.org/ipxe.git
+cd ipxe/src
+echo "#!ipxe" > chooseServer.ipxe
+echo "set dhcp-server 10.239.0.1" >> chooseServer.ipxe
+echo "autoboot" >> chooseServer.ipxe
+make bin/ipxe.usb EMBED=chooseServer.ipxe
+dd if=bin/ipxe.usb of=/dev/sdX</code></pre></div>
+
+I created a [script](http://ipxe.org/scripting) in order to force the dhcp-server used (they are multiple DHCP servers on this subnet). You could here specify an IP configuration or a script to fetch via HTTP (this way you can change easily the script iPXE executes at boot).
+
+## Resources
 
 Useful resources I used to achieve this project :
 
