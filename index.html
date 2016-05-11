@@ -7,9 +7,9 @@ layout: default
   <ul class="list-unstyled" id="index-post-list">
     {% for post in site.posts %}
       <li class="post-item">
-        <h3 class="title">
+        <h1 class="title">
           <a class="" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h3>
+        </h1>
         <p class="title-date"><small class="text-muted">{{ post.date | date: "%b %-d, %Y" }}</small></p>
 
         {{ post.content | markdownify }}
