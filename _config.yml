@@ -12,6 +12,7 @@ charset: utf-8
 gems:
   - jekyll-gist
   - jekyll-read-more
+  - jekyll-sitemap
 
 # Build settings
 markdown: kramdown
