@@ -3,6 +3,7 @@ layout: post
 title:  "sCTF.io Q1"
 date:   2016-04-19 22:34:18 +0200
 categories: ctf
+excerpt: My first write-ups of the sCTF.io 2016 Q1 of reversing, algorithmics and forensics challenges.
 ---
 
 A week ago, I took part of the sCTF.io 2016 Q1 with a friend. This is the first time I take seriously part to a CTF. We managed to score 1700 points and ranked 7th of about 700 teams (Funpetitor for us as we do not live in US).

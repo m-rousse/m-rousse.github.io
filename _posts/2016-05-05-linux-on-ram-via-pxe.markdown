@@ -3,6 +3,7 @@ layout: post
 title:  "Archlinux on RAM via PXE"
 date:   2016-05-08 16:11:09 +0200
 categories: sysadmin
+excerpt: How to set up a server to deliver PXE boot and a full RAM client to automate actions on a network.
 ---
 
 Having a room filled with computers able to boot over PXE, either a classroom or a LAN Party during sleeptime, or having a computer bios locked but with PXE before the hard drive, gave me the desire to design a computer to quickly boot on a system and perform all kind of operations I needed.

@@ -2,6 +2,7 @@
 layout: page
 title: Projects
 permalink: /projects/
+excerpt: A list of my ongoing or finished IT project as well as those to which I contributed.
 ---
 
 I have several projects ongoing at the moment :

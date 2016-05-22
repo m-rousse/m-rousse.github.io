@@ -3,6 +3,7 @@ layout: post
 title:  "My setup"
 date:   2016-04-06 11:52:53 +0200
 categories: misc
+excerpt: The setup I use everyday to browse internet, develop stuff, test technologies and work.
 ---
 
 I have spend many hours on the internet, discovering new technologies and comparing them to understand their assets and how they could help me on my projects.

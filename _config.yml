@@ -1,8 +1,7 @@
 # Site settings
 title: Last code until midnight
 email: mathieu at rousse d0t me
-description: >
-  The blog of an IT Security student in France.
+description: The blog of an IT Security student in France.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://math.rousse.me" # the base hostname & protocol for your site
 twitter_username: roussemath
