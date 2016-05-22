@@ -12,6 +12,7 @@ debug: true
 charset: utf-8
 gems:
   - jekyll-gist
+  - jekyll-read-more
 
 # Build settings
 markdown: kramdown

@@ -9,6 +9,7 @@ I have spend many hours on the internet, discovering new technologies and compar
 
 During one of those explorations, I found [usethis.com](https://usesthis.com), a website which to answer the question "What do people use to get stuff done?".
 
+<!---excerpt-break-->
 I found a lot of great products and wanted to share mine as a student. A few years after I start working, I will update this.
 
 ### Who are you, and what do you do?

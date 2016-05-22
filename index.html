@@ -12,8 +12,10 @@ layout: default
         </h1>
         <p class="title-date"><small class="text-muted">{{ post.date | date: "%b %-d, %Y" }}</small></p>
 
-        {{ post.content | markdownify }}
-
+        {{ post.content | get_post_excerpt | markdownify }}
+        {% if post.content | post_contains_excerpt_tag %}
+          <a href="{{ post.url }}">Read more →</a>
+        {% endif %}
       </li>
     {% endfor %}
   </ul>

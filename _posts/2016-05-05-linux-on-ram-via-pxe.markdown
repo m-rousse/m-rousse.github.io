@@ -11,6 +11,7 @@ So came the idea of setting up a server to boot on an already installed OS, and 
 
 This could be useful in order to boot quickly a cluster, automate tasks (retrieve the SAM/shadow file of a computer, install an OS, ...) and/or for trolling.
 
+<!---excerpt-break-->
 The work has been divided in three steps :
 
 - Install a server with DHCP-PXE/TFTP/NFS

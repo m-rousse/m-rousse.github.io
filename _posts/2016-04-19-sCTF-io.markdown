@@ -11,6 +11,7 @@ A week ago, I took part of the sCTF.io 2016 Q1 with a friend. This is the first 
 
 Here are a few notes about problems we solved and found interesting.
 
+<!---excerpt-break-->
 ### Rev1
 
 I used IDA during the challenge, but as I want to practice with [Radare2](http://www.radare.org/r/) the write up will be using radare2.
