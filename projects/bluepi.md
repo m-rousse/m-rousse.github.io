@@ -1,6 +1,7 @@
 ---
 layout: page
 title: BluePi
+date:  2016-04-26 14:33:53 +0200
 permalink: /projects/bluepi
 ---
 
