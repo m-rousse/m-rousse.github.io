@@ -19,4 +19,4 @@ Here are some sites that I worked on :
 - [PepSound](http://pepsound.fr/) : Worked on the backoffice, calendar and music player. *(HTML5, jQuery)*
 - [Citadingue](http://citadingue.mgate.fr/) : Helped integrating the design in HTML/CSS/JS from mockups the client gave us. *(bootstrap)*
 - [IDServices](http://www.idservices.fr/) : Integrated the multilingual support and modules for the intranet. *(CakePHP, jQuery)*
-- [My Blog](https://math.rousse.me/) : This blog where I present ideas and techniques 
+- [My Blog](https://math.rousse.me/) : This blog where I present ideas and techniques that I did not find easily or that are interesting. *(jekyll, grunt, sass, jQuery, bootstrap)*
