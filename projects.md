@@ -4,6 +4,10 @@ title: Projects
 date:  2016-05-24 11:46:53 +0200
 permalink: /projects/
 excerpt: A list of my ongoing or finished IT project as well as those to which I contributed.
+sitemap:
+  lastmod: 2016-05-24
+  priority: 0.5
+  changefreq: 'monthly'
 ---
 
 I have several projects ongoing at the moment :

@@ -3,6 +3,10 @@ layout: page
 title: About
 permalink: /about/
 excerpt: About me, an IT security student eager to discover new technologies and write a safer world !
+sitemap:
+  lastmod: 2016-04-21
+  priority: 0.6
+  changefreq: 'yearly'
 ---
 
 My name is Mathieu Rousse. I am a musician, technology addict and an occasional photographer.

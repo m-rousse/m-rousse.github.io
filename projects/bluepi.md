@@ -3,6 +3,10 @@ layout: page
 title: BluePi
 date:  2016-04-26 14:33:53 +0200
 permalink: /projects/bluepi
+sitemap:
+  lastmod: 2016-05-05
+  priority: 0.6
+  changefreq: 'yearly'
 ---
 
 During my experiments with network I often wanted to have a quick way to create an access point to connect multiple devices to one RJ45 socket or to connect to a Wi-Fi network and connect it to an Ethernet network. When the RaspberryPi came out I took the opportunity and ordered one.
