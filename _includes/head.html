@@ -12,18 +12,7 @@
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
 {% if site.debug == false %}
-<script type="text/javascript">
-  var _paq = _paq || [];
-  _paq.push(['trackPageView']);
-  _paq.push(['enableLinkTracking']);
-  (function() {
-    var u="//stats.rousse.me/";
-    _paq.push(['setTrackerUrl', u+'need-stats/php']);
-    _paq.push(['setSiteId', 1]);
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'js'; s.parentNode.insertBefore(g,s);
-  })();
-</script>
+<script type="text/javascript" src="{{ "/lib/needstats.js" | prepend: site.baseurl }}"></script>
 <noscript><p><img src="//stats.rousse.me/need-stats/php?idsite=1" style="border:0;" alt="" /></p></noscript>
 {% endif %}
 <script type="application/ld+json">
