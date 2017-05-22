@@ -22,12 +22,11 @@ pip install docker dnspython
 
 Then we can listen on docker events using this snippet :
 
-```
-import docker
+<div><pre class="language-python line-numbers">
+<code class="language-python">import docker
 client = docker.DockerClient(base_url='unix://var/run/docker.sock')
 for event in client.events():
-    print(event)
-```
+    print(event)</code></pre></div>
 
 If you start/stop a container you should see events appear !
 
@@ -36,8 +35,7 @@ To dynamically update a DNS zone, you have to configure Bind to allow DDNS, Juli
 Then you can use this snippet to update a zone :
 
 <div><pre class="language-python line-numbers">
-<code class="language-python">
-import dns.query
+<code class="language-python">import dns.query
 import dns.tsigkeyring
 import dns.update
 import sys
@@ -49,10 +47,9 @@ keyring = dns.tsigkeyring.from_text({
 update = dns.update.Update('container.sea', keyring=keyring)
 update.replace('container', 300, 'a', "172.17.0.22")
 
-response = dns.query.tcp(update, '10.0.0.1')
-</code></pre></div>
+response = dns.query.tcp(update, '10.0.0.1')</code></pre></div>
 
-With this code, I put together this little script that creates my domain names as I start/stop my containers :
+With this code, I put together this little script that creates my domain names as I start/stop my containers : [As a little bonus, I added the systemd service file :)]
 
 {% gist m-rousse/b98363fd3370e33a253d11a64e4de92a %}
 
