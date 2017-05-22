@@ -22,34 +22,31 @@ First I made a script to fetch the blacklisted domains used by AdAway and genera
 
 {% gist m-rousse/e126f628f3f8994ef515079d8426965a %}
 
-It generates a big `blacklisted.zones` file with for each domain an entry like so : 
+It generates a big `blacklisted.zones` file with for each domain an entry like so :
 
-```
-...
+<div><pre class="language-bash line-numbers">
+<code class="language-bash">...
 zone "ad.domain.com" {type master; allow-update{ key "rdnc-key"; }; file "/var/named/sinkhole.zone";};
-...
-```
+...</code></pre></div>
 
 You can include directely this file in Bind :
 
-```
-check-names master ignore;
+<div><pre class="language-bash line-numbers">
+<code class="language-bash">check-names master ignore;
 check-names slave  ignore;
 
-include "/path/to/blacklisted.zones";
-```
+include "/path/to/blacklisted.zones";</code></pre></div>
 
 To finish, you need the `sinkhole.zone` file that resolves the domain to `localhost`.
 
-```
-$TTL 86400
+<div><pre class="language-bash line-numbers">
+<code class="language-bash">$TTL 86400
 @       IN SOA server.domain.name. hostmaster.domain.name. (2016121219 86400 3600 3600000 300)
 @       IN NS     domain.name.
 @               A       127.0.0.1
 *       IN      A       127.0.0.1
 @               AAAA    ::1
-*       IN      AAAA    ::1
-```
+*       IN      AAAA    ::1</code></pre></div>
 
 That's it ! Now, advertisements do not load and I can peacefully look at kittens online without most ads !
 
