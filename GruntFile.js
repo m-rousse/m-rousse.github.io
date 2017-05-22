@@ -100,7 +100,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: '_site',
                     src: ['**'],
-                    dest: 'D:/Softs/wamp64/www/blog'
+                    dest: '/srv/math'
                 }
         },
 
