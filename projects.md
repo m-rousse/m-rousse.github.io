@@ -22,6 +22,6 @@ Here are some sites that I worked on :
 - [Incipio](https://github.com/m-rousse/Incipio) : It is an ERP (Enterprise Resources Planning) conceived especially for Junior Entreprises, associations of students offering consulting services to the market. *(Symfony)*
 - [MyIsmin](http://myismin.emse.fr/) : This is the presentation site of the associations and clubs of my school. *(jekyll, bootstrap)*
 - [PepSound](http://pepsound.fr/) : Worked on the backoffice, calendar and music player. *(HTML5, jQuery)*
-- [Citadingue](http://citadingue.mgate.fr/) : Helped integrating the design in HTML/CSS/JS from mockups the client gave us. *(bootstrap)*
+- [Citadingue](https://lecitadingue.com/) : Helped integrating the design in HTML/CSS/JS from mockups the client gave us. *(bootstrap)*
 - [IDServices](http://www.idservices.fr/) : Integrated the multilingual support and modules for the intranet. *(CakePHP, jQuery)*
 - [My Blog](https://math.rousse.me/) : This blog where I present ideas and techniques that I did not find easily or that are interesting. *(jekyll, grunt, sass, jQuery, bootstrap)*
