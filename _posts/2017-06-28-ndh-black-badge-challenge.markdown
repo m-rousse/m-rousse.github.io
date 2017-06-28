@@ -6,7 +6,7 @@ categories: challenge
 excerpt: Write-up du Black Badge Challenge de la Nuit du Hack 2017.
 ---
 
-Cette année, nous [Amré, Jean, Mathieu, Thibault] nous sommes rendus à la Nuit du Hack, et avons tenté le challenge "Black Badge". Ce challenge permet de gagner un badge collector qui offre à son possesseur une entrée gratuite ad vitam æternam. Intrigués, notre équipe spontanément formée s'est lancée à l'aventure. Ce court write-up a pour vocation d'expliquer comment on a procédé pour accéder au Saint Graal (et aussi d'évoquer les différentes difficultés qu'on a rencontré).
+Cette année, nous [Amré, Jean, Mathieu, Thibault] nous sommes rendus à la Nuit du Hack, et avons tenté le challenge "Black Badge". Ce challenge permet de gagner un badge collector qui offre à son possesseur une entrée gratuite ad vitam æternam. Intriguée, notre équipe spontanément formée s'est lancée à l'aventure. Ce court write-up a pour vocation d'expliquer comment on a procédé pour accéder au Saint Graal (et aussi d'évoquer les différentes difficultés qu'on a rencontré).
 
 <!---excerpt-break-->
 
@@ -52,7 +52,7 @@ Soit en hexa : `7669727475616C6162732E66722F6E64687876`, qui correspond à `virt
 
 # Étape deux : une image coriace
 
-Au rendu de la page web évoquée ci-dessus dans un navigateur, on aperçoit furtivement le texte `PNG`. Ni une, ni deux, on va chercher le code source de la page qui n'est autre qu'un PNG avec un peu de HTML (fichier polyglote, un [épisode de NoLimitSecu](https://www.nolimitsecu.fr/ange-albertini-funky-file-formats/) y est consacré) pour rendre le navigateur content et qu'il n'affiche pas l'image cachée.
+Au rendu de la page web évoquée ci-dessus dans un navigateur, on aperçoit furtivement le texte `PNG`. Ni une, ni deux, on va chercher le code source de la page qui n'est autre qu'un PNG avec un peu de HTML (fichier polyglote, un [épisode de NoLimitSecu](https://www.nolimitsecu.fr/ange-albertini-funky-file-formats/) y est consacré) pour que le navigateur n'y voit que du feu et qu'il n'affiche pas l'image cachée.
 
 On décide de garder uniquement la partie PNG de l'hybride mais on se heurte à un soucis : l'image PNG est corrompue. On constate (à l'aide des [super fiches de synthèse de Ange Albertini](https://github.com/corkami/pics/blob/master/binary/PNG.png)) que certains retours à la ligne `\r\n` sont transformés en `\n`. On a essayé beaucoup de techniques (ça mériterait à la limite un article à part entière), en particulier [PNG uncorrupt](http://toh.necst.it/plaidctf2015/forensics/PNG_Uncorrupt/) et [ça](http://blog.knapsy.com/blog/2014/11/17/png-from-hell-ruxcon-ctf-challenge/) utilisés lors d'autres CTF, mais malheureusement sans succès.
 
@@ -82,12 +82,12 @@ Virtualabs insistant sur l'importance du logo Windows, nous avons pensé que cel
 
 Soit : `[date] canal longueur_payload adresse payload`
 
-Une lecture préalable du [whitepaper](https://github.com/BastilleResearch/mousejack/blob/master/doc/pdf/DEFCON-24-Marc-Newlin-MouseJack-Injecting-Keystrokes-Into-Wireless-Mice.whitepaper.pdf).publié par Bastille lors de la Defcon 24, de l'[article de Travis Goodspeed](http://travisgoodspeed.blogspot.fr/2011/02/promiscuity-is-nrf24l01s-duty.html) et [du code du projet KeySweeper de Samy Kamkar](http://samy.pl/keysweeper/) nous permet d'avoir une petite idée du format des trames et du chiffrement utilisé.
+Une lecture préalable du [whitepaper](https://github.com/BastilleResearch/mousejack/blob/master/doc/pdf/DEFCON-24-Marc-Newlin-MouseJack-Injecting-Keystrokes-Into-Wireless-Mice.whitepaper.pdf) publié par Bastille lors de la Defcon 24, de l'[article de Travis Goodspeed](http://travisgoodspeed.blogspot.fr/2011/02/promiscuity-is-nrf24l01s-duty.html) et [du code du projet KeySweeper de Samy Kamkar](http://samy.pl/keysweeper/) nous permet d'avoir une petite idée du format des trames et du chiffrement utilisé.
 Les claviers sans-fils transmettent à l'hôte les touches pressées via les spécifications USB-HID. Ainsi, lorsque l'on frappe la touche 'a' de son clavier, le clavier transmet un message `keydown` avec l'identifiant de la touche, puis un message `keyup` avec pour identifiant de touche `0x00`. De ce fait, on observe deux paquets par appui/relâchement de touche.
-Entre les différentes trames, seuls 3 octets changent, le 5° octet du paquet ressemble à un compteur (très souvent des nombres consécutifs), et le dernier octet lui serait un checksum de la trame.
-Le 9° octet change souvent et serait donc la touche pressée.
-Le chiffrement est réalisé en xorant le paquet avec un secret partagé, négocié lors de l'appairage du clavier avec la dongle réceptrice. Ceci signifie que l'octet correspondant à l'identifiant de la touche pressée sera toujours xoré avec le même octet.
-Pour identifier la clé, il suffit d'identifier les paquets correspondant à `keyup`. Lors de la capture, nous avons eu un très grand nombre de paquets avec `0x4E` pour identifiant de touche. On suppose que ce sont les paquets `keyup` et ainsi l'octet utilisé pour le xor serait `0x4E`.
+Entre les différentes trames, seuls 3 octets changent, le 5<sup>ème</sup> octet du paquet ressemble à un compteur (très souvent des nombres consécutifs), et le dernier octet lui serait un checksum de la trame.
+Le 9<sup>ème</sup> octet change souvent et serait donc la touche pressée.
+Le chiffrement est réalisé en XORant le paquet avec un secret partagé, négocié lors de l'appairage du clavier avec la dongle réceptrice. Ceci signifie que l'octet correspondant à l'identifiant de la touche pressée sera toujours XORé avec le même octet.
+Pour identifier la clé, il suffit d'identifier les paquets correspondant à `keyup`. Lors de la capture, nous avons eu un très grand nombre de paquets avec `0x4E` pour identifiant de touche. On suppose que ce sont les paquets `keyup` et ainsi l'octet utilisé pour le XOR serait `0x4E`.
 On a alors écrit un [petit script](https://gist.github.com/m-rousse/30adf5ec761b0909fa2fcfe799a492d9) pour déchiffrer les identifiants de touche et afficher la touche correspondante. (On a utilisé pour ça les données contenues sur le site de [FreeBSDDiaries](http://www.freebsddiary.org/APC/usb_hid_usages.php)).
 
 Pour simplifier le script, on a nettoyé la capture avant de la traiter en supprimant toutes les colonnes inutiles en bash : `cat capture.txt |  cut -d" " -f10 | cut -d":" -f10 > keycodes.txt`
@@ -129,7 +129,4 @@ Nous tenons tout particulièrement à remercier [@virtualabs](https://twitter.co
 Comme chaque année depuis 5 ans que nous nous y rendons, la NdH est un super moment de rencontres et de challenges, nous ne saurions remercier assez [@hackerzvoice](https://twitter.com/hackerzvoice) et [@sysdream](https://twitter.com/sysdream) pour l'organisation de l'évènement.
 À l'année prochaine !
 
-[Amré](https://twitter.com/AmreABOUALI)
-[Jean](https://tibounise.com/)
-[Mathieu](https://twitter.com/roussemath)
-et Thibault
+[Amré](https://twitter.com/AmreABOUALI), [Jean](https://tibounise.com/), [Mathieu](https://twitter.com/roussemath) et Thibault.
