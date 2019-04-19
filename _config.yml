@@ -20,5 +20,5 @@ kramdown:
 gist:
   noscript: false
   
-exclude: ['css','_scss','node_modules','package.json','GruntFile.js','Readme.md', 'js']
+exclude: ['_scss', 'css', 'js', 'node_modules', 'package.json', 'yarn.lock', 'Dockerfile', 'GruntFile.js', 'Readme.md']
 keep_files: ['_site/css', '_site/js']

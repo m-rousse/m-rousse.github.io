@@ -139,7 +139,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: "images/",
                     src: "**/*",
-                    dest: "thumbs/",
+                    dest: "_site/thumbs/",
                     extDot: "first"
                 }]
             },
