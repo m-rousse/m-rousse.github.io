@@ -3,11 +3,12 @@ FROM node:11.12 as builder
 
 RUN mkdir app
 WORKDIR /app
-COPY . .
+COPY package.json yarn.lock ./
 RUN yarn
 RUN apt update
 RUN apt install jekyll -y -q
 RUN gem install jekyll-read-more
+COPY . .
 RUN npx grunt
 
 VOLUME /app
