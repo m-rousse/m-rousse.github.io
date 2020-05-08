@@ -6,13 +6,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>404 - Are you lost ?</title>
+  <title>BluePi</title>
   <meta name="description" content="The blog of an IT and security enthusiast.">
   <meta name="keywords" content="blog, Mathieu Rousse, linux, pentest, challenge, ctf, writeup">
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,500,600&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="/css/main.min.css">
-  <link rel="canonical" href="https://math.rousse.me/404.html">
+  <link rel="canonical" href="https://math.rousse.me/projects/bluepi">
   <link rel="alternate" type="application/rss+xml" title="Last code until midnight" href="https://math.rousse.me/feed.xml">
 
 <script type="text/javascript" src="/lib/needstats.js"></script>
@@ -50,13 +50,31 @@
 </div>
 
 
-      <div class="container error-box">
+      <div class="container">
+  <h1>
+    <a class="" href="/projects/bluepi">BluePi</a>
+  </h1>
+  <small class="text-muted">Apr 26, 2016</small>
 
-  <h1>Uh, page not found.</h1>
+  <p>During my experiments with network I often wanted to have a quick way to create an access point to connect multiple devices to one RJ45 socket or to connect to a Wi-Fi network and connect it to an Ethernet network. When the RaspberryPi came out I took the opportunity and ordered one.</p>
 
-  <p>The page you tried to access has not been found :(</p>
-  <p>Let me walk you back to <a href="/index.html">home</a></p><br/>
-  <p>If you think the link you used should be valid, please <a id="contactAdd">send me a message</a>.</p>
+<p>A RaspberryPi is a nice nano-computer with (in its version 1B) Ethernet and a few USB ports. I plugged a Wi-Fi dongle and a Bluetooth one so my RasPi is now capable of becoming an access point as I wished or a Wi-Fi client.</p>
+
+<p>It is nice to have this setup, but switching between modes requires me to either edit the configuration on the SD card with my computer or booting the RasPi, edit its config and restart services.</p>
+
+<p>So I tought of a system to control my RasPi and set it in the different modes I need using my smartphone and bluetooth.</p>
+
+<p>Look at the repo : <a href="https://git.rousse.me/mrousse/BluePi">BluePi</a></p>
+
+<p>The modes I want to have :</p>
+
+<ul>
+  <li>Ethernet to Wi-Fi // With routing capabilities</li>
+  <li>Wi-Fi to Ethernet // With routing capabilities</li>
+  <li>Router (DHCP, routing, with a webinterface or displays leases on the smartphone)</li>
+  <li>PXE Boot server</li>
+</ul>
+
 
 </div>
 

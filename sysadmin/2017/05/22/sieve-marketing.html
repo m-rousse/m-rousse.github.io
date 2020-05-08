@@ -6,13 +6,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>404 - Are you lost ?</title>
-  <meta name="description" content="The blog of an IT and security enthusiast.">
+  <title>Removing marketing links in e-mails with Sieve</title>
+  <meta name="description" content="Using Sieve and python, this script removes marketing links from e-mails to always hover at the exact link you will be redirected to.">
   <meta name="keywords" content="blog, Mathieu Rousse, linux, pentest, challenge, ctf, writeup">
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,500,600&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="/css/main.min.css">
-  <link rel="canonical" href="https://math.rousse.me/404.html">
+  <link rel="canonical" href="https://math.rousse.me/sysadmin/2017/05/22/sieve-marketing.html">
   <link rel="alternate" type="application/rss+xml" title="Last code until midnight" href="https://math.rousse.me/feed.xml">
 
 <script type="text/javascript" src="/lib/needstats.js"></script>
@@ -50,13 +50,56 @@
 </div>
 
 
-      <div class="container error-box">
+      <div class="container">
+  <h1 class="title">Removing marketing links in e-mails with Sieve</h1>
 
-  <h1>Uh, page not found.</h1>
+  <p class="title-date"><small class="text-muted">May 22, 2017</small></p>
 
-  <p>The page you tried to access has not been found :(</p>
-  <p>Let me walk you back to <a href="/index.html">home</a></p><br/>
-  <p>If you think the link you used should be valid, please <a id="contactAdd">send me a message</a>.</p>
+  <p>E-mail marketing companies track the link opened in the e-mails to offer a better vision of what worked and what did not to the client. The tracking method consist to rewrite every links in the e-mail with links to a server of the marketing company which then redirects the customer to the right page.</p>
+
+<p>This leads to having some weird and unintellegible links in the e-mails we receive every day, like so :</p>
+
+<!---excerpt-break-->
+
+<div class="highlighter-rouge"><pre class="codehilite"><code>http://xxxx.srvn.list-manage1.com/track/click?u=yyyyyyyy&amp;id=zzzzzzzz&amp;e=ppppppppp
+</code></pre></div>
+
+<p>This bothers me as I do not know where I will be redirected. So I used Sieve and python to rewrite the links back.</p>
+
+<p><a href="http://sieve.info/">Sieve</a> is a language to filter e-mail messages. It can take several actions as classifying e-mails or sending them to third party programs. In this case it will allow us to filter the e-mails and depending on the sending address, rewrite the links or not.</p>
+
+<p>My global sieve config file contains :</p>
+
+<div><pre class="language-bash line-numbers">
+<code class="language-bash">plugin {
+    ...
+    sieve_plugins = sieve_extprograms
+    sieve_filter_bin_dir = /folder/to/sieve/scripts
+    sieve_extensions = +vnd.dovecot.filter
+    sieve_filter_exec_timeout = 60s
+    ...
+}</code></pre></div>
+
+<p>My local sieve config file looks like this :</p>
+
+<div><pre class="language-bash line-numbers">
+<code class="language-bash">require ["copy","fileinto","imap4flags", "vnd.dovecot.filter"];
+# rule:[Marketing URL]
+if header :contains "from" "marketing@campain.thx"
+{
+    filter "filter.py";
+}</code></pre></div>
+
+<p>Then we need to create the python script at : <code class="highlighter-rouge">/folder/to/sieve/scripts/filter.py</code>. It reads the e-mail in MIME format from <code class="highlighter-rouge">stdin</code>, then parses for URLs. I chose the regex to catch links to other sites, link to the 1px image that indicates that I read the e-mail and link to unsuscribe (as I do not want my script to unsuscribe by mistake).</p>
+
+<p>For each link to another website, it does a request and retrieves the <code class="highlighter-rouge">Location</code> header and replaces the link with this new URL. For the other links, it replaces them with a link to Google.</p>
+
+<script src="https://gist.github.com/m-rousse/89a4128edaa52d6e227221d47e017d1e.js"> </script>
+
+<p>The last thing to note is that the e-mail should be sent back to <code class="highlighter-rouge">stdout</code> in MIME format.</p>
+
+<p>Enjoy your e-mails with comprehensible links :)</p>
+
 
 </div>
 

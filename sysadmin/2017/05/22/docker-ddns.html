@@ -6,13 +6,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>404 - Are you lost ?</title>
-  <meta name="description" content="The blog of an IT and security enthusiast.">
+  <title>Dynamic DNS with docker</title>
+  <meta name="description" content="Dynamically update DNS zone to give domain name to new Dockers.">
   <meta name="keywords" content="blog, Mathieu Rousse, linux, pentest, challenge, ctf, writeup">
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,500,600&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="/css/main.min.css">
-  <link rel="canonical" href="https://math.rousse.me/404.html">
+  <link rel="canonical" href="https://math.rousse.me/sysadmin/2017/05/22/docker-ddns.html">
   <link rel="alternate" type="application/rss+xml" title="Last code until midnight" href="https://math.rousse.me/feed.xml">
 
 <script type="text/javascript" src="/lib/needstats.js"></script>
@@ -50,13 +50,59 @@
 </div>
 
 
-      <div class="container error-box">
+      <div class="container">
+  <h1 class="title">Dynamic DNS with docker</h1>
 
-  <h1>Uh, page not found.</h1>
+  <p class="title-date"><small class="text-muted">May 22, 2017</small></p>
 
-  <p>The page you tried to access has not been found :(</p>
-  <p>Let me walk you back to <a href="/index.html">home</a></p><br/>
-  <p>If you think the link you used should be valid, please <a id="contactAdd">send me a message</a>.</p>
+  <p>I’ve been fiddling with dockers lately and have become a little lazy about the IP addresses of the containers. As lazy as the programmer that I am, I decided to configure DDNS with Bind.</p>
+
+<p>This way, I could simply reach out <code class="highlighter-rouge">container.sea</code> instead of <code class="highlighter-rouge">172.17.0.22</code>.</p>
+
+<!---excerpt-break-->
+
+<p>To make it work I used the <a href="https://docker-py.readthedocs.io/en/stable/">docker Python bindings</a>. The script listens to events and when a container is started, it adds its address to the DNS server using the <code class="highlighter-rouge">dnspython</code> module.</p>
+
+<p>First thing first, we need to install the docker and dns python modules :</p>
+
+<div class="highlighter-rouge"><pre class="codehilite"><code>pip install docker dnspython
+</code></pre></div>
+
+<p>Then we can listen on docker events using this snippet :</p>
+
+<div><pre class="language-python line-numbers">
+<code class="language-python">import docker
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+for event in client.events():
+    print(event)</code></pre></div>
+
+<p>If you start/stop a container you should see events appear !</p>
+
+<p>To dynamically update a DNS zone, you have to configure Bind to allow DDNS, Julien Valroff wrote a good article about this on <a href="https://www.kirya.net/articles/running-a-secure-ddns-service-with-bind/">his blog</a>.</p>
+
+<p>Then you can use this snippet to update a zone :</p>
+
+<div><pre class="language-python line-numbers">
+<code class="language-python">import dns.query
+import dns.tsigkeyring
+import dns.update
+import sys
+
+keyring = dns.tsigkeyring.from_text({
+    'sea.' : 'XXXXXXXXXXXXXXXXXXXXXX=='
+})
+
+update = dns.update.Update('container.sea', keyring=keyring)
+update.replace('container', 300, 'a', "172.17.0.22")
+
+response = dns.query.tcp(update, '10.0.0.1')</code></pre></div>
+
+<p>With this code, I put together this little script that creates my domain names as I start/stop my containers : [As a little bonus, I added the systemd service file :)]</p>
+
+<script src="https://gist.github.com/m-rousse/b98363fd3370e33a253d11a64e4de92a.js"> </script>
+
+<p>Feel free to contact me if you want any more explanations or have a suggestion :)</p>
+
 
 </div>
 

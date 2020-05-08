@@ -1,25 +1,226 @@
----
-layout: default
-sitemap:
-  priority: 0.8
----
+<!DOCTYPE html>
+<html lang="en">
 
-<div class="container">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Last code until midnight</title>
+  <meta name="description" content="The blog of an IT and security enthusiast.">
+  <meta name="keywords" content="blog, Mathieu Rousse, linux, pentest, challenge, ctf, writeup">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,500,600&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/css/main.min.css">
+  <link rel="canonical" href="https://math.rousse.me/">
+  <link rel="alternate" type="application/rss+xml" title="Last code until midnight" href="https://math.rousse.me/feed.xml">
+
+<script type="text/javascript" src="/lib/needstats.js"></script>
+<noscript><p><img src="https://stats.rousse.me/need-stats/php?idsite=1" style="border:0;" alt="" /></p></noscript>
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Person",
+  "name": "Mathieu Rousse",
+  "url": "https://math.rousse.me",
+  "sameAs": [
+    "https://fr.linkedin.com/in/mathieurousse",
+    "https://plus.google.com/110154694510997957312"
+  ]
+}
+</script>
+</head>
+
+
+  <body>
+
+    <div class="container">
+
+      <div class="header clearfix">
+
+  <nav class="navbar navbar-light bg-faded" itemscope itemtype="http://schema.org/SiteNavigationElement">
+    <a class="navbar-brand" href="/">Last code until midnight</a>
+    <ul class="nav navbar-nav pull-right">
+      <li class="nav-item"><a class="nav-link" itemprop="url" href="/"><span itemprop="name">Home</span></a></li>
+      <li class="nav-item"><a class="nav-link" itemprop="url" href="/projects/"><span itemprop="name">Projects</span></a></li>
+      <li class="nav-item"><a class="nav-link" itemprop="url" href="/about/"><span itemprop="name">About</span></a></li>
+    </ul>
+  </nav>
+</div>
+
+
+      <div class="container">
 
   <ul class="list-unstyled" id="index-post-list">
-    {% for post in site.posts %}
+    
       <li class="post-item">
         <h1 class="title">
-          <a class="" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+          <a class="" href="/challenge/2017/06/28/ndh-black-badge-challenge.html">Write-up (à chaud) du challenge badge de la Nuit du Hack</a>
         </h1>
-        <p class="title-date"><small class="text-muted">{{ post.date | date: "%b %-d, %Y" }}</small></p>
+        <p class="title-date"><small class="text-muted">Jun 28, 2017</small></p>
 
-        {{ post.content | get_post_excerpt | markdownify }}
-        {% if post.content | post_contains_excerpt_tag %}
-          <a href="{{ post.url }}">Read more →</a>
-        {% endif %}
+        <p>Cette année, nous [Amré, Jean, Mathieu, Thibault] nous sommes rendus à la Nuit du Hack, et avons tenté le challenge “Black Badge”. Ce challenge permet de gagner un badge collector qui offre à son possesseur une entrée gratuite ad vitam æternam. Intriguée, notre équipe spontanément formée s’est lancée à l’aventure. Ce court write-up a pour vocation d’expliquer comment on a procédé pour accéder au Saint Graal (et aussi d’évoquer les différentes difficultés qu’on a rencontré).</p>
+
+
+        
+          <a href="/challenge/2017/06/28/ndh-black-badge-challenge.html">Read more →</a>
+        
       </li>
-    {% endfor %}
+    
+      <li class="post-item">
+        <h1 class="title">
+          <a class="" href="/sysadmin/2017/05/22/docker-ddns.html">Dynamic DNS with docker</a>
+        </h1>
+        <p class="title-date"><small class="text-muted">May 22, 2017</small></p>
+
+        <p>I’ve been fiddling with dockers lately and have become a little lazy about the IP addresses of the containers. As lazy as the programmer that I am, I decided to configure DDNS with Bind.</p>
+
+<p>This way, I could simply reach out <code class="highlighter-rouge">container.sea</code> instead of <code class="highlighter-rouge">172.17.0.22</code>.</p>
+
+
+        
+          <a href="/sysadmin/2017/05/22/docker-ddns.html">Read more →</a>
+        
+      </li>
+    
+      <li class="post-item">
+        <h1 class="title">
+          <a class="" href="/sysadmin/2017/05/22/sieve-marketing.html">Removing marketing links in e-mails with Sieve</a>
+        </h1>
+        <p class="title-date"><small class="text-muted">May 22, 2017</small></p>
+
+        <p>E-mail marketing companies track the link opened in the e-mails to offer a better vision of what worked and what did not to the client. The tracking method consist to rewrite every links in the e-mail with links to a server of the marketing company which then redirects the customer to the right page.</p>
+
+<p>This leads to having some weird and unintellegible links in the e-mails we receive every day, like so :</p>
+
+
+        
+          <a href="/sysadmin/2017/05/22/sieve-marketing.html">Read more →</a>
+        
+      </li>
+    
+      <li class="post-item">
+        <h1 class="title">
+          <a class="" href="/sysadmin/2017/05/22/adblock-bind.html">AdBlock on mobile without root</a>
+        </h1>
+        <p class="title-date"><small class="text-muted">May 22, 2017</small></p>
+
+        <p>My smartphone is under android and used to be rooted. Many applications refuse to start if they detect that the phone has been rooted (either via scanning running processes or simply by looking for a <code class="highlighter-rouge">su</code> executable).</p>
+
+<p>On the other hand, I do not like advertisements and find more and more of them in the applications I use every day.</p>
+
+
+        
+          <a href="/sysadmin/2017/05/22/adblock-bind.html">Read more →</a>
+        
+      </li>
+    
+      <li class="post-item">
+        <h1 class="title">
+          <a class="" href="/sysadmin/2016/05/08/linux-on-ram-via-pxe.html">Archlinux on RAM via PXE</a>
+        </h1>
+        <p class="title-date"><small class="text-muted">May 8, 2016</small></p>
+
+        <p>Having a room filled with computers able to boot over PXE, either a classroom or a LAN Party during sleeptime, or having a computer bios locked but with PXE before the hard drive, gave me the desire to design a computer to quickly boot on a system and perform all kind of operations I needed.</p>
+
+<p>So came the idea of setting up a server to boot on an already installed OS, and this OS to be a Archlinux easily updateable (so not a liveCD).</p>
+
+<p>This could be useful in order to boot quickly a cluster, automate tasks (retrieve the SAM/shadow file of a computer, install an OS, …) and/or for trolling.</p>
+
+
+        
+          <a href="/sysadmin/2016/05/08/linux-on-ram-via-pxe.html">Read more →</a>
+        
+      </li>
+    
+      <li class="post-item">
+        <h1 class="title">
+          <a class="" href="/ctf/2016/04/19/sCTF-io.html">sCTF.io Q1</a>
+        </h1>
+        <p class="title-date"><small class="text-muted">Apr 19, 2016</small></p>
+
+        <p>A week ago, I took part of the sCTF.io 2016 Q1 with a friend. This is the first time I take seriously part to a CTF. We managed to score 1700 points and ranked 7th of about 700 teams (Funpetitor for us as we do not live in US).</p>
+
+<div class="lightboximg"><a href="/images/sctfio-2016q1.png " data-lightbox="lightbox-image" class="lightboximg"><img src="/thumbs/sctfio-2016q1.png " class="lightboximg" /></a></div>
+
+<p>Here are a few notes about problems we solved and found interesting.</p>
+
+
+        
+          <a href="/ctf/2016/04/19/sCTF-io.html">Read more →</a>
+        
+      </li>
+    
+      <li class="post-item">
+        <h1 class="title">
+          <a class="" href="/misc/2016/04/06/my-setup.html">My setup</a>
+        </h1>
+        <p class="title-date"><small class="text-muted">Apr 6, 2016</small></p>
+
+        <p>I have spend many hours on the internet, discovering new technologies and comparing them to understand their assets and how they could help me on my projects.</p>
+
+<p>During one of those explorations, I found <a href="https://usesthis.com">usethis.com</a>, a website which to answer the question “What do people use to get stuff done?”.</p>
+
+
+        
+          <a href="/misc/2016/04/06/my-setup.html">Read more →</a>
+        
+      </li>
+    
   </ul>
 
 </div>
+
+
+      <hr>
+
+      <div class="container">
+
+  <div class="row">
+
+    <div class="col-md-6">
+      <ul class="list-unstyled">
+        <li><a id="contactAdd"><i class="fa fa-envelope-o fa-fw"></i> mathieu at rousse d0t me</a></li>
+        <li><a href="/feed.xml"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      </ul>
+    </div>
+
+    <div class="col-md-6">
+      <div class="footer-col footer-col-2">
+        <ul class="list-unstyled">
+          
+          <li>
+            <a href="https://github.com/m-rousse"><i class="fa fa-github fa-fw"></i><span class="username">m-rousse</span></a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/roussemath"><i class="fa fa-twit-icon fa-fw"></i><span class="username">roussemath</span></a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://fr.linkedin.com/in/mathieurousse"><i class="fa fa-lin fa-fw"></i><span class="username">mathieurousse</span></a>
+          </li>
+          
+        </ul>
+      </div>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p class="text-muted">The blog of an IT and security enthusiast.</p>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="/js/LastLineUntilMidnight.min.js"></script>
+
+    </div>
+
+  </body>
+
+</html>

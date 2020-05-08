@@ -1,56 +1,176 @@
----
-layout: null
-sitemap:
-  exclude: 'yes'
----
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  {% for post in site.posts %}
-    {% unless post.published == false %}
+  
+    
     <url>
-      <loc>{{ site.url }}{{ post.url }}</loc>
-      {% if post.sitemap.lastmod %}
-        <lastmod>{{ post.sitemap.lastmod | date: "%Y-%m-%d" }}</lastmod>
-      {% elsif post.date %}
-        <lastmod>{{ post.date | date_to_xmlschema }}</lastmod>
-      {% else %}
-        <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
-      {% endif %}
-      {% if post.sitemap.changefreq %}
-        <changefreq>{{ post.sitemap.changefreq }}</changefreq>
-      {% else %}
+      <loc>https://math.rousse.me/challenge/2017/06/28/ndh-black-badge-challenge.html</loc>
+      
+        <lastmod>2017-06-28T19:27:37+00:00</lastmod>
+      
+      
         <changefreq>monthly</changefreq>
-      {% endif %}
-      {% if post.sitemap.priority %}
-        <priority>{{ post.sitemap.priority }}</priority>
-      {% else %}
+      
+      
         <priority>0.5</priority>
-      {% endif %}
+      
     </url>
-    {% endunless %}
-  {% endfor %}
-  {% for page in site.pages %}
-    {% unless page.sitemap.exclude == "yes" %}
+    
+  
+    
     <url>
-      <loc>{{ site.url }}{{ page.url | remove: "index.html" }}</loc>
-      {% if page.sitemap.lastmod %}
-        <lastmod>{{ page.sitemap.lastmod | date: "%Y-%m-%d" }}</lastmod>
-      {% elsif page.date %}
-        <lastmod>{{ page.date | date_to_xmlschema }}</lastmod>
-      {% else %}
-        <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
-      {% endif %}
-      {% if page.sitemap.changefreq %}
-        <changefreq>{{ page.sitemap.changefreq }}</changefreq>
-      {% else %}
+      <loc>https://math.rousse.me/sysadmin/2017/05/22/docker-ddns.html</loc>
+      
+        <lastmod>2017-05-22T19:32:32+00:00</lastmod>
+      
+      
         <changefreq>monthly</changefreq>
-      {% endif %}
-      {% if page.sitemap.priority %}
-        <priority>{{ page.sitemap.priority }}</priority>
-      {% else %}
-        <priority>0.3</priority>
-      {% endif %}
+      
+      
+        <priority>0.5</priority>
+      
     </url>
-    {% endunless %}
-  {% endfor %}
+    
+  
+    
+    <url>
+      <loc>https://math.rousse.me/sysadmin/2017/05/22/sieve-marketing.html</loc>
+      
+        <lastmod>2017-05-22T15:16:54+00:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://math.rousse.me/sysadmin/2017/05/22/adblock-bind.html</loc>
+      
+        <lastmod>2017-05-22T13:11:09+00:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://math.rousse.me/sysadmin/2016/05/08/linux-on-ram-via-pxe.html</loc>
+      
+        <lastmod>2016-05-08T14:11:09+00:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://math.rousse.me/ctf/2016/04/19/sCTF-io.html</loc>
+      
+        <lastmod>2016-04-19T20:34:18+00:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://math.rousse.me/misc/2016/04/06/my-setup.html</loc>
+      
+        <lastmod>2016-04-06T09:52:53+00:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+  
+    
+  
+    
+    <url>
+      <loc>https://math.rousse.me/about/</loc>
+      
+        <lastmod>2016-04-21</lastmod>
+      
+      
+        <changefreq>yearly</changefreq>
+      
+      
+        <priority>0.6</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://math.rousse.me/projects/bluepi</loc>
+      
+        <lastmod>2016-05-05</lastmod>
+      
+      
+        <changefreq>yearly</changefreq>
+      
+      
+        <priority>0.6</priority>
+      
+    </url>
+    
+  
+    
+  
+    
+    <url>
+      <loc>https://math.rousse.me/</loc>
+      
+        <lastmod>2020-05-08T14:22:43+00:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.8</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://math.rousse.me/projects/</loc>
+      
+        <lastmod>2019-04-23</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+  
 </urlset>

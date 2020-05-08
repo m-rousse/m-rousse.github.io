@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>sCTF.io Q1</title>
+  <meta name="description" content="My first write-ups of the sCTF.io 2016 Q1 of reversing, algorithmics and forensics challenges.">
+  <meta name="keywords" content="blog, Mathieu Rousse, linux, pentest, challenge, ctf, writeup">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,500,600&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/css/main.min.css">
+  <link rel="canonical" href="https://math.rousse.me/ctf/2016/04/19/sCTF-io.html">
+  <link rel="alternate" type="application/rss+xml" title="Last code until midnight" href="https://math.rousse.me/feed.xml">
+
+<script type="text/javascript" src="/lib/needstats.js"></script>
+<noscript><p><img src="https://stats.rousse.me/need-stats/php?idsite=1" style="border:0;" alt="" /></p></noscript>
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Person",
+  "name": "Mathieu Rousse",
+  "url": "https://math.rousse.me",
+  "sameAs": [
+    "https://fr.linkedin.com/in/mathieurousse",
+    "https://plus.google.com/110154694510997957312"
+  ]
+}
+</script>
+</head>
+
+
+  <body>
+
+    <div class="container">
+
+      <div class="header clearfix">
+
+  <nav class="navbar navbar-light bg-faded" itemscope itemtype="http://schema.org/SiteNavigationElement">
+    <a class="navbar-brand" href="/">Last code until midnight</a>
+    <ul class="nav navbar-nav pull-right">
+      <li class="nav-item"><a class="nav-link" itemprop="url" href="/"><span itemprop="name">Home</span></a></li>
+      <li class="nav-item"><a class="nav-link" itemprop="url" href="/projects/"><span itemprop="name">Projects</span></a></li>
+      <li class="nav-item"><a class="nav-link" itemprop="url" href="/about/"><span itemprop="name">About</span></a></li>
+    </ul>
+  </nav>
+</div>
+
+
+      <div class="container">
+  <h1 class="title">sCTF.io Q1</h1>
+
+  <p class="title-date"><small class="text-muted">Apr 19, 2016</small></p>
+
+  <p>A week ago, I took part of the sCTF.io 2016 Q1 with a friend. This is the first time I take seriously part to a CTF. We managed to score 1700 points and ranked 7th of about 700 teams (Funpetitor for us as we do not live in US).</p>
+
+<div class="lightboximg"><a href="/images/sctfio-2016q1.png " data-lightbox="lightbox-image" class="lightboximg"><img src="/thumbs/sctfio-2016q1.png " class="lightboximg" /></a></div>
+
+<p>Here are a few notes about problems we solved and found interesting.</p>
+
+<!---excerpt-break-->
+<h3 id="rev1">Rev1</h3>
+
+<p>I used IDA during the challenge, but as I want to practice with <a href="http://www.radare.org/r/">Radare2</a> the write up will be using radare2.</p>
+
+<p>First, I ran the program to have an idea of what to look for.</p>
+
+<div><pre class="command-line" data-user="mr" data-host="sopasoda" data-output="2-99">
+<code class="language-bash">./rev1
+What is the magic password?
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</code></pre></div>
+
+<p>So it does not print anything if the password is wrong. It’s time to fire radare2 !</p>
+
+<div><pre class="language-nasm line-numbers">
+<code class="language-nasm">[0x00400560]&gt; aaa
+[0x00400560]&gt; iz
+vaddr=0x00400744 paddr=0x00000744 ordinal=000 sz=28 len=27 section=.rodata type=a string=What is the magic password?
+vaddr=0x00400763 paddr=0x00000763 ordinal=001 sz=26 len=25 section=.rodata type=a string=Correct! Your flag is: %s
+
+[0x00400560]&gt; pd 10 @ 0x00400744-5
+|          0x0040073f    0001           add byte [rcx], al
+|          ;-- sym._IO_stdin_used:
+|          ;-- section..rodata:
+|          0x00400740    0100           add dword [rax], eax           ; [14] va=0x00400740 pa=0x00000740 sz=61 vsz=61 rwx=-r-- .rodata
+|          0x00400742    0200           add al, byte [rax]
+|          ; DATA XREF from 0x00400677 (sym.main)
+|          ;-- str.What_is_the_magic_password_:
+|          0x00400744     .string "What is the magic password?" ; len=28
+|      |   ; DATA XREF from 0x00400688 (sym.main)
+       |   0x00400760    256400436f     and eax, 0x6f430064
+|      |   ; DATA XREF from 0x004006a8 (sym.main)
+       |   ;-- str.Correct__Your_flag_is:__s:                 ; ignore this__
+       |   0x00400763     .string "Correct! Your flag is: %s" ; len=26
+           ;-- section_end..rodata:
+           0x0040077d    0000           add byte [rax], al
+           0x0040077f    0001           add byte [rcx], al
+           ;-- section..eh_frame_hdr:
+           0x00400780    011b           add dword [rbx], ebx           ; [15] va=0x00400780 pa=0x00000780 sz=52 vsz=52 rwx=-r-- .eh_frame_hdr
+           0x00400782    033b           add edi, dword [rbx]
+[0x00400560]&gt; s 0x00400677
+[0x00400677]&gt; pdf @ 0x00400677
+/ (fcn) sym.main 104
+|          ; var int local_0_4    @ rbp-0x4
+|          ; var int local_1      @ rbp-0x8
+|          ; var int local_2      @ rbp-0x10
+|          ; DATA XREF from 0x0040057d (entry0)
+|          ;-- main:
+|          ;-- sym.main:
+|          0x00400656    55             push rbp
+|          0x00400657    4889e5         mov rbp, rsp
+|          0x0040065a    4883ec10       sub rsp, 0x10
+|          0x0040065e    c745fc000000.  mov dword [rbp-local_0_4], 0
+|          0x00400665    48b868347830.  movabs rax, 0x2121217230783468
+|          0x0040066f    488945f0       mov qword [rbp-local_2], rax
+|          0x00400673    c645f800       mov byte [rbp-local_1], 0
+|          0x00400677    bf44074000     mov edi, str.What_is_the_magic_password_ ; "What is the magic password?" @ 0x400744
+|          0x0040067c    e8affeffff     call sym.imp.puts ;sym.imp.puts()
+|          0x00400681    488d45fc       lea rax, qword [rbp-local_0_4]
+|          0x00400685    4889c6         mov rsi, rax
+|          0x00400688    bf60074000     mov edi, 0x400760
+|          0x0040068d    b800000000     mov eax, 0
+|          0x00400692    e8b9feffff     call sym.imp.scanf ;sym.imp.scanf()
+|          0x00400697    8b45fc         mov eax, dword [rbp-local_0_4]
+|          0x0040069a    3d745b0000     cmp eax, 0x5b74
+|      ,=&lt; 0x0040069f    7516           jne 0x4006b7
+|      |   0x004006a1    488d45f0       lea rax, qword [rbp-local_2]
+|      |   0x004006a5    4889c6         mov rsi, rax
+|      |   0x004006a8    bf63074000     mov edi, str.Correct__Your_flag_is:__s ; "Correct! Your flag is: %s" @ 0x400763
+|      |   0x004006ad    b800000000     mov eax, 0
+|      |   0x004006b2    e859feffff     call sym.imp.printf ;sym.imp.printf()
+|      |   ; JMP XREF from 0x0040069f (sym.main)
+|      `-&gt; 0x004006b7    b800000000     mov eax, 0
+|          0x004006bc    c9             leave
+\          0x004006bd    c3             ret
+[0x00400677]&gt; q
+</code></pre></div>
+
+<p>The steps :</p>
+
+<ul>
+  <li><code class="highlighter-rouge">aaa</code> : First, analyze all the program fonctions</li>
+  <li><code class="highlighter-rouge">ìz</code> : Then print all the strings of the program</li>
+  <li><code class="highlighter-rouge">pd 10 @ 0x00400744-5</code>: We show the disassembly around one of the strings. We see that “What is the magic password” is used in <code class="highlighter-rouge">main</code> at 0x00400677</li>
+  <li><code class="highlighter-rouge">s 0x00400677</code> : So we move to 0x00400677</li>
+  <li><code class="highlighter-rouge">pdf @ 0x00400677</code> : And we print the disassembly of the function (main).</li>
+  <li>There, we can see the password is compared to <code class="highlighter-rouge">0x5b74</code> as a numerical value. The password is then this value in decimal : 23412</li>
+</ul>
+
+<p>We found our password, let’s feed it to the binary :</p>
+
+<div><pre class="command-line" data-user="mr" data-host="sopasoda" data-output="2-99">
+<code class="language-bash">./rev1
+What is the magic password?
+23412
+Correct! Your flag is: h4x0r!!!</code></pre></div>
+
+<p>We did it !</p>
+
+<p><code class="highlighter-rouge">flag : sctf{h4x0r!!!}</code></p>
+
+<h3 id="ducks">Ducks</h3>
+
+<p>Write Up To-Do, the website is currently off-line. (If I remember well, I added an input to the form).</p>
+
+<h3 id="lengthy-lingo">Lengthy Lingo</h3>
+
+<p>A quick overview of the file gives us no hint, except that the lines are quite lengthy. Looking at the length, we see that the length of the lines is always under 127, and could always be a printable ascii char.</p>
+
+<p>We wrote this code to convert the length of the lines to characters :</p>
+
+<div><pre class="language-php line-numbers">
+<code class="language-php">$file = file_get_contents("encrypted.dat");
+$file = explode("\n", $file);
+foreach($file as $line){
+  echo chr(strlen($line));
+}
+echo "\n";
+</code></pre></div>
+
+<p>Which gave us the <code class="highlighter-rouge">flag : sctf{101_th3_numb3r5_d1dn'7_3v3n_m4tt3r}</code></p>
+
+<h3 id="rain-or-shine">Rain or Shine</h3>
+
+<p>For this one, I realized my method was wrong, but I could not think of any other way of doing it :</p>
+
+<p>The file is a record of the rain in the wav format. Let’s see if the file contains other data :</p>
+
+<div><pre class="command-line" data-user="mr" data-host="sopasoda" data-output="2-12">
+<code class="language-bash">binwalk rain.wav
+
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+152318        0x252FE         MySQL ISAM compressed data file Version 2
+586865        0x8F471         MySQL ISAM compressed data file Version 5
+5669358       0x5681EE        MySQL ISAM index file Version 1
+5831936       0x58FD00        TIFF image data, little-endian offset of first image directory: 8
+5832467       0x58FF13        Unix path: /www.w3.org/1999/02/22-rdf-syntax-ns#"&gt;
+5832624       0x58FFB0        Unix path: /purl.org/dc/elements/1.1/"
+5832748       0x59002C        Unix path: /ns.adobe.com/xap/1.0/mm/"
+5832806       0x590066        Unix path: /ns.adobe.com/xap/1.0/sType/ResourceEvent#"&gt;</code></pre></div>
+
+<p>There we see that there is a TIFF header at 0x58FD00. So I extract it with <code class="highlighter-rouge">dd if=rain.wav of=writeup.tiff bs=1 skip=5831936</code> which gives me this image :</p>
+
+<div class="lightboximg"><a href="/images/sctfio-2016q1-rain-scrambled.png " data-lightbox="lightbox-image" class="lightboximg"><img src="/thumbs/sctfio-2016q1-rain-scrambled.png " class="lightboximg" /></a></div>
+
+<p>We can clearly recognize a QR Code, but it looks scrambled.</p>
+
+<p>After a few minutes of paint, I achieved reconstructing the original QR Code which gives me the <code class="highlighter-rouge">flag : sctf{5t3g0n4gr4phy_i5_fun_r1t3?}</code></p>
+
+<h3 id="musical-penguins">Musical Penguins</h3>
+
+<p>The file is a TuxGuitar tablature. Once opened, we see only two notes, by group of 15 with 5 notes per measure. It looks like morse, so we wanted to transcript this to dots for the E and dashes for the C notes. As they are a lot of notes, we decided to do this automagically.</p>
+
+<ul>
+  <li>Export the file to xml</li>
+  <li>Open it with vim</li>
+  <li>Let’s remove all useless lines: <code class="highlighter-rouge">:%v/fret/d</code></li>
+  <li>Remove everything that is not a number: <code class="highlighter-rouge">:%s/&lt;fret&gt;//g</code> and <code class="highlighter-rouge">:%s/&lt;\/fret&gt;//g</code> and <code class="highlighter-rouge">:%s/\n//g</code></li>
+  <li>There is a 5 in the middle that stands for a 1 (measure 149): <code class="highlighter-rouge">:%s/5/1/g</code></li>
+  <li>Replace 2 with dot and 1 with dash: <code class="highlighter-rouge">:%s/2/./g</code> and <code class="highlighter-rouge">:%s/1/-/g</code></li>
+  <li>Space every group of 5 char : <code class="highlighter-rouge">qa</code> four times <code class="highlighter-rouge">right arrow</code> then <code class="highlighter-rouge">a &lt;space&gt; &lt;esc&gt; &lt;right arrow&gt; q</code> and finally <code class="highlighter-rouge">145@a</code> (145 because they are 730 char).</li>
+  <li>Using an online morse decoder, we then have a string of numbers between 0 and 6.</li>
+  <li>Using the same method than above, we can cut the string into groups of 3 numbers and then convert them from base 7 to base 16 and read the ascii corresponding char</li>
+</ul>
+
+<p>Finally, the <code class="highlighter-rouge">flag : sctf{1_u53d_t0_m4k3_mu51c_w1th_th15_4ll_th3_t1m3}</code></p>
+
+<h3 id="rev2">Rev2</h3>
+
+<p>Once again we’ll use Radare2 :</p>
+
+<div><pre class="language-nasm line-numbers">
+<code class="language-nasm">[0x00400560]&gt; aaa
+[0x00400560]&gt; iz
+vaddr=0x004007a4 paddr=0x000007a4 ordinal=000 sz=28 len=27 section=.rodata type=a string=What is the magic password?
+vaddr=0x004007c3 paddr=0x000007c3 ordinal=001 sz=26 len=25 section=.rodata type=a string=Correct! Your flag is: %d
+
+[0x00400560]&gt; pd 10 @ 0x004007a4 -5
+|           0x0040079f    0001           add byte [rcx], al
+|           ;-- sym._IO_stdin_used:
+|           ;-- section..rodata:
+|           0x004007a0    0100           add dword [rax], eax          ; [14] va=0x004007a0 pa=0x000007a0 sz=61 vsz=61 rwx=-r-- .rodata
+|           0x004007a2    0200           add al, byte [rax]
+|           ; DATA XREF from 0x0040066c (sym.main)
+|           ;-- str.What_is_the_magic_password_:
+|           0x004007a4     .string "What is the magic password?" ; len=28
+|     |||   ; DATA XREF from 0x0040067d (sym.main)
+      |||   0x004007c0    256400436f     and eax, 0x6f430064
+|     |||   ; DATA XREF from 0x00400702 (sym.main)
+      |||   ;-- str.Correct__Your_flag_is:__d:                 ; ignore me__
+      |||   0x004007c3     .string "Correct! Your flag is: %d" ; len=26
+   |||||    ;-- section_end..rodata:
+   |||||    0x004007dd    0000           add byte [rax], al
+   |||||    0x004007df    0001           add byte [rcx], al
+   |||||    ;-- section..eh_frame_hdr:
+   |||||    0x004007e0    011b           add dword [rbx], ebx          ; [15] va=0x004007e0 pa=0x000007e0 sz=52 vsz=52 rwx=-r-- .eh_frame_hdr
+   |||||    0x004007e2    033b           add edi, dword [rbx]
+[0x00400560]&gt; s 0x00400702
+[0x00400702]&gt; pdf @ main
+/ (fcn) sym.main 194
+|          ; arg int arg_64043_5  @ rbp+0x7d15d
+|          ; var int local_0_4    @ rbp-0x4
+|          ; var int local_1      @ rbp-0x8
+|          ; DATA XREF from 0x0040057d (entry0)
+|          ;-- main:
+|          ;-- sym.main:
+|          0x00400656    55             push rbp
+|          0x00400657    4889e5         mov rbp, rsp
+|          0x0040065a    4883ec10       sub rsp, 0x10
+|          0x0040065e    c745f8000000.  mov dword [rbp-local_1], 0
+|          0x00400665    c745fc5dd107.  mov dword [rbp-local_0_4], 0x7d15d  ; [0x7d15d:4]=-1
+|          0x0040066c    bfa4074000     mov edi, str.What_is_the_magic_password_ ; "What is the magic password?" @ 0x4007a4
+|          0x00400671    e8bafeffff     call sym.imp.puts
+|            ^- sym.imp.puts()
+|          0x00400676    488d45f8       lea rax, qword [rbp-local_1]
+|          0x0040067a    4889c6         mov rsi, rax
+|          0x0040067d    bfc0074000     mov edi, 0x4007c0
+|          0x00400682    b800000000     mov eax, 0
+|          0x00400687    e8c4feffff     call sym.imp.scanf
+|            ^- sym.imp.scanf()
+|          0x0040068c    8b45f8         mov eax, dword [rbp-local_1]
+|          0x0040068f    3d83da0d03     cmp eax, 0x30dda83
+|      ,=&lt; 0x00400694    757b           jne 0x400711
+|      |   0x00400696    8b45f8         mov eax, dword [rbp-local_1]
+              ... lot of ops ...
+|      |   0x00400700    89c6           mov esi, eax
+|      |   0x00400702    bfc3074000     mov edi, str.Correct__Your_flag_is:__d ; "Correct! Your flag is: %d" @ 0x4007c3
+|      |   0x00400707    b800000000     mov eax, 0
+|      |   0x0040070c    e8fffdffff     call sym.imp.printf
+|      |     ^- sym.imp.printf()
+|      |   ; JMP XREF from 0x00400694 (sym.main)
+|      `-&gt; 0x00400711    b800000000     mov eax, 0
+|          0x00400716    c9             leave
+\          0x00400717    c3             ret
+
+</code></pre></div>
+
+<p>We used the same way we used for Rev1 : look for strings, look where they are used, read the code around.</p>
+
+<p>This time the code was very easy to understand : right after the <code class="highlighter-rouge">scanf</code> there is a comparison then a jump. It jumps only if the password is not equal to <code class="highlighter-rouge">0x30dda83</code>. So we feed it as a base 10 number to the binary.</p>
+
+<div><pre class="command-line" data-user="mr" data-host="sopasoda" data-output="2-99">
+<code class="language-bash">./rev2
+What is the magic password?
+51239555
+Correct! Your flag is: 51196695</code></pre></div>
+
+<p>That’s it : <code class="highlighter-rouge">flag : sctf{51196695}</code></p>
+
+<h3 id="secure-text-saver">Secure Text Saver</h3>
+
+<p>We have a jar file which displays a login/register page, once logged in, we can set text that will be saved (securely).</p>
+
+<p>A jar file is an archive, so we can unzip it and try to find useful informations into the files.</p>
+
+<div><pre class="command-line" data-user="mr" data-host="sopasoda" data-output="2-20, 22, 24-33">
+<code class="language-bash">unzip Secure_Text_Saver.jar
+Archive:  Secure_Text_Saver.jar
+  inflating: META-INF/MANIFEST.MF
+  inflating: Account.class
+   creating: com/
+   creating: com/intellij/
+   creating: com/intellij/uiDesigner/
+   creating: com/intellij/uiDesigner/core/
+  inflating: com/intellij/uiDesigner/core/AbstractLayout.class
+  inflating: com/intellij/uiDesigner/core/DimensionInfo.class
+  inflating: com/intellij/uiDesigner/core/GridConstraints.class
+  inflating: com/intellij/uiDesigner/core/GridLayoutManager.class
+  inflating: com/intellij/uiDesigner/core/HorizontalInfo.class
+  inflating: com/intellij/uiDesigner/core/LayoutState.class
+  inflating: com/intellij/uiDesigner/core/Spacer.class
+  inflating: com/intellij/uiDesigner/core/SupportCode$TextWithMnemonic.class
+  inflating: com/intellij/uiDesigner/core/SupportCode.class
+  inflating: com/intellij/uiDesigner/core/Util.class
+  inflating: com/intellij/uiDesigner/core/VerticalInfo.class
+  inflating: Login_Page.class
+ls
+Account.class  com  Login_Page.class  META-INF  Secure_Text_Saver.jar
+strings Login_Page.class
+... lot of text ...
+Login_Page.java
+Account
+        ztaylor54
+]!xME}behA8qjM~T
+javax/swing/JFrame
+Login | Sign Up
+... lot of text ...</code></pre></div>
+
+<p>While reading the strings found in the <code class="highlighter-rouge">Login_Page.class</code> file, we found the nickname of the author of the challenge, we tried this username and the following line as password. And it worked !</p>
+
+<p><code class="highlighter-rouge">flag : sctf{w0w_th4t_w45_pr377y_e45y}</code></p>
+
+<h3 id="cookies">Cookies</h3>
+
+<p>The same way we opened the previous jar, we unzip it and look at the main class file.</p>
+
+<p>We then look for strings in it.</p>
+
+<div><pre class="command-line" data-user="mr" data-host="sopasoda" data-output="2-9, 11-99">
+<code class="language-bash">unzip cookie.jar
+Archive:  cookie.jar
+  inflating: META-INF/MANIFEST.MF
+   creating: com/
+   creating: com/intellij/
+   creating: com/intellij/uiDesigner/
+   creating: com/intellij/uiDesigner/core/
+... Lot of Text ...
+  inflating: Cookie.class
+ls
+com  Cookie.class  cookie.jar  META-INF
+strings Cookie.class
+Cookie
+java/lang/Object
+Cookie.java
+... Lot of text ...
+java/io/PrintStream
+println
+ fdf87a05e2169b88a8db5a1ebc15fa50
+equals
+(Ljava/lang/Object;)Z
+success! it's working!
+... Lot of text ...</code></pre></div>
+
+<p>A quick overview allows us to find a md5 hash. A simple search with google gives us the plain text : <code class="highlighter-rouge">thisisaverystrongpassword</code></p>
+
+<p>We then can input this password into the application, which gives us the following flag : <code class="highlighter-rouge">flag: sctf{g3t_y0ur_h4nd_0ut_0f_my_c00k13_j4r!}</code></p>
+
+<h3 id="tracking">Tracking</h3>
+
+<p>For this challenge, we have to trilaterate a few devices’ position knowing their distance from 4 satellites and the satelittes’ position.</p>
+
+<p>In the <code class="highlighter-rouge">description.txt</code> file we have the equations between the position (x,y,z) and the distances (d1, d2, d3, d4) to the satellites. I rewrote those equations a little to have simple equations for the coordinates.</p>
+
+<p>I wrote a small script in PHP for this task :</p>
+
+<div><pre class="language-php line-numbers">
+<code class="language-php">$data = file_get_contents("tracking.in");
+$data = explode("---------------------------------", $data);
+
+$p = 2000; // x coordinate of satellite B
+$q = 2000; // x coordinate of satellite C
+$r = 2000; // y coordinate of satellite C
+$s = 3000; // x coordinate of satellite D
+$t = 1500; // y coordinate of satellite D
+$u = 1700; // z coordinate of satellite D
+
+$data = explode("\n",$data[1]);
+array_pop($data);
+array_shift($data);
+
+$x_tot = 0;
+$y_tot = 0;
+$z_tot = 0;
+
+foreach($data as $k =&gt; $l){
+	list($d1, $d2, $d3, $d4) = explode(" ", $l);
+
+	// Compute x y and z
+	$x = ($d1*$d1 - $d2 * $d2 + $p*$p)/(2*$p);
+	$y = -1*($d3*$d3 - $d2 * $d2 - 2*$x*($p-$q) - $q * $q + $p * $p - $r * $r)/(2 * $r);
+	$z = -1*($d4*$d4 - $d1 * $d1 + 2 * $x * $s - $s * $s + 2 * $t * $y - $t * $t - $u * $u)/(2 * $u);
+
+	$x_tot += $x;
+	$y_tot += $y;
+	$z_tot += $z;
+}
+
+echo "FINAL : sctf{".ceil($x_tot/count($data)).", ".ceil($y_tot/count($data)).", ".ceil($z_tot/count($data))."}\n";</code></pre></div>
+
+<p>Which computes the flag : <code class="highlighter-rouge">flag: sctf{537, 516, 487}</code></p>
+
+<h3 id="verticode">Verticode</h3>
+
+<p>In this challenge, we have an image with text encoded in it. Each byte is coded with a 7 bits binary code and a color. Depending of the color, the number represented by the black and white is shifted or not.</p>
+
+<p>I wrote two functions, one to get the shift value depending of the color of the block, another one to get the value of the number represented by the 7 bits binary code.</p>
+
+<p>Then I read the image from top to bottom and convert the numbers to ascii.</p>
+
+<div><pre class="language-php line-numbers">
+<code class="language-php">function getColorCode($color){
+  $r = $color['r'];
+  $g = $color['g'];
+  $b = $color['b'];
+  $a = $color['a'];
+
+  if($r == 255 &amp;&amp; $g == 0 &amp;&amp; $b == 0)
+    return 0;
+  if($r == 128 &amp;&amp; $g == 0 &amp;&amp; $b == 128)
+    return 1;
+  if($r == 0 &amp;&amp; $g == 0 &amp;&amp; $b == 255)
+    return 2;
+  if($r == 0 &amp;&amp; $g == 128 &amp;&amp; $b == 0)
+    return 3;
+  if($r == 255 &amp;&amp; $g == 255 &amp;&amp; $b == 0)
+    return 4;
+  if($r == 255 &amp;&amp; $g == 165 &amp;&amp; $b == 0)
+    return 5;
+  echo "Erreur : $r - $g - $b\n";
+}
+
+function getCode($image, $line){
+  global $width, $ps;
+  $curwidth = $width/4*2+$ps/2;
+  $val = 0;
+  $i = 6;
+  while($curwidth &lt; $width){
+    $color = $image-&gt;getImagePixelColor($curwidth, $line);
+    $color = $color-&gt;getColor();
+    if($color['r'] == 0)
+      $val += pow(2,$i);
+    $i--;
+    $curwidth += $ps;
+  }
+  return $val;
+}
+
+$image = new Imagick("code1.png");
+$ps = 12; // Pixel Size for code1.png;
+$width = 168;
+$height = 12900;
+
+$currentline = $ps/2;
+
+$chars = [];
+while($currentline &lt; $height){
+  $color = $image-&gt;getImagePixelColor($width/4, $currentline);
+  $color = $color-&gt;getColor();
+  $color = getColorCode($color);
+
+  $code = getCode($image, $currentline);
+
+  //echo "Color : $color - code : $code\n";
+
+  $chars[] = chr($code-$color);
+  $currentline += $ps;
+}
+$str = implode($chars);
+echo $str;
+</code></pre></div>
+
+<p>This scripts outputs this string :</p>
+
+<p><code class="highlighter-rouge">Joe Lopo was a man of mild temperament ... too much text ... Lobo into a lair of pitch blackness found to be a parallel dimension that caus ABCiamtheflagalllowercasenojokeDEF
+anyone whose first name began with J along with M L and Q to become rather uncomfortable Joe was also suddenly introduced to undroclamaticolomphasisciousy the eccentric tapeworm with a strong morrocanaccent I mundroclamaticolomphasisciousy the eccentric tapeworm I like pizza so how are ya doin I have no idea said Joe</code></p>
+
+<p>I added by hand spaces to make it more understandable. And we have our flag : <code class="highlighter-rouge">flag: sctf{iamtheflagalllowercasenojoke}</code></p>
+
+<h3 id="vertinet">Vertinet</h3>
+
+<p>Vertinet is following the Verticode challenge as it uses the same coding for strings but we need to communicate with a server and to solve a few of them automatically to solve it.</p>
+
+<p>This one took a little more time as I had difficulties communicating with the server. I used the same code as in Verticode, and wrapped the main code into a new function <code class="highlighter-rouge">decode</code> which takes an image and outputs the decoded string. I also added a <code class="highlighter-rouge">resolve</code> function to split the answer I received from the server and keep only the interesting part : the image.</p>
+
+<p>Then I added the connection to the challenge server and the automatic resolve and answer to the server. I added logging to follow what is going on between my script and the server.</p>
+
+<div><pre class="language-php line-numbers">
+<code class="language-php">function decode($image){
+  $geom = $image-&gt;getImageGeometry();
+  $width = $geom['width'];
+  $height = $geom['height'];
+  $ps = $width / 2 / 7;
+
+  $currentline = $ps/2;
+
+  $chars = [];
+  while($currentline &lt; $height){
+    $color = $image-&gt;getImagePixelColor($width/4, $currentline);
+    $color = $color-&gt;getColor();
+    $color = getColorCode($color);
+
+    $code = getCode($image, $currentline, $width, $ps);
+
+    //echo "Color : $color - code : $code\n";
+
+    $chars[] = chr($code-$color);
+    $currentline += $ps;
+  }
+  $str = implode($chars);
+  return $str;
+}
+
+function resolve($html){
+  file_put_contents("data.log", "NEW DATA : \n$html\n----------------------------\n", FILE_APPEND);
+  $data = explode("'", $html);
+  $data = explode(",",$data[1]);
+  $data = $data[1];
+
+  $image = new Imagick();
+  $image-&gt;readImageBlob(base64_decode($data));
+  $reponse = decode($image);
+  return $reponse;
+}
+
+$ns = "problems1.2016q1.sctf.io";
+$host = gethostbyname($ns);
+$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+echo "Connection à $ns\n";
+socket_connect($socket, $host, 50000);
+
+while(true){
+  echo "Reception\n";
+  $data = "";
+  while($out = socket_read($socket, 2048 )){
+    $data .= $out;
+    if(substr($out,-6) == "&lt;/img&gt;")
+      break;
+  }
+
+  $in = resolve($data);
+
+  echo "Sending an answer\n";
+  echo "Answer : $in\n";
+  socket_write($socket, $in, strlen($in));
+}
+
+echo "The END\n";
+socket_close($socket);</code></pre></div>
+
+<p>And eventually, after 200 resolutions, I get the flag from the server (in my log file) : <code class="highlighter-rouge">flag: sctf{y0ub34tth3v3rt1c0d3}</code></p>
+
+
+</div>
+
+
+      <hr>
+
+      <div class="container">
+
+  <div class="row">
+
+    <div class="col-md-6">
+      <ul class="list-unstyled">
+        <li><a id="contactAdd"><i class="fa fa-envelope-o fa-fw"></i> mathieu at rousse d0t me</a></li>
+        <li><a href="/feed.xml"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      </ul>
+    </div>
+
+    <div class="col-md-6">
+      <div class="footer-col footer-col-2">
+        <ul class="list-unstyled">
+          
+          <li>
+            <a href="https://github.com/m-rousse"><i class="fa fa-github fa-fw"></i><span class="username">m-rousse</span></a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/roussemath"><i class="fa fa-twit-icon fa-fw"></i><span class="username">roussemath</span></a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://fr.linkedin.com/in/mathieurousse"><i class="fa fa-lin fa-fw"></i><span class="username">mathieurousse</span></a>
+          </li>
+          
+        </ul>
+      </div>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p class="text-muted">The blog of an IT and security enthusiast.</p>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="/js/LastLineUntilMidnight.min.js"></script>
+
+    </div>
+
+  </body>
+
+</html>

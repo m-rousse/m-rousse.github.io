@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Archlinux on RAM via PXE</title>
+  <meta name="description" content="How to set up a server to deliver PXE boot and a full RAM client to automate actions on a network.">
+  <meta name="keywords" content="blog, Mathieu Rousse, linux, pentest, challenge, ctf, writeup">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,500,600&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/css/main.min.css">
+  <link rel="canonical" href="https://math.rousse.me/sysadmin/2016/05/08/linux-on-ram-via-pxe.html">
+  <link rel="alternate" type="application/rss+xml" title="Last code until midnight" href="https://math.rousse.me/feed.xml">
+
+<script type="text/javascript" src="/lib/needstats.js"></script>
+<noscript><p><img src="https://stats.rousse.me/need-stats/php?idsite=1" style="border:0;" alt="" /></p></noscript>
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Person",
+  "name": "Mathieu Rousse",
+  "url": "https://math.rousse.me",
+  "sameAs": [
+    "https://fr.linkedin.com/in/mathieurousse",
+    "https://plus.google.com/110154694510997957312"
+  ]
+}
+</script>
+</head>
+
+
+  <body>
+
+    <div class="container">
+
+      <div class="header clearfix">
+
+  <nav class="navbar navbar-light bg-faded" itemscope itemtype="http://schema.org/SiteNavigationElement">
+    <a class="navbar-brand" href="/">Last code until midnight</a>
+    <ul class="nav navbar-nav pull-right">
+      <li class="nav-item"><a class="nav-link" itemprop="url" href="/"><span itemprop="name">Home</span></a></li>
+      <li class="nav-item"><a class="nav-link" itemprop="url" href="/projects/"><span itemprop="name">Projects</span></a></li>
+      <li class="nav-item"><a class="nav-link" itemprop="url" href="/about/"><span itemprop="name">About</span></a></li>
+    </ul>
+  </nav>
+</div>
+
+
+      <div class="container">
+  <h1 class="title">Archlinux on RAM via PXE</h1>
+
+  <p class="title-date"><small class="text-muted">May 8, 2016</small></p>
+
+  <p>Having a room filled with computers able to boot over PXE, either a classroom or a LAN Party during sleeptime, or having a computer bios locked but with PXE before the hard drive, gave me the desire to design a computer to quickly boot on a system and perform all kind of operations I needed.</p>
+
+<p>So came the idea of setting up a server to boot on an already installed OS, and this OS to be a Archlinux easily updateable (so not a liveCD).</p>
+
+<p>This could be useful in order to boot quickly a cluster, automate tasks (retrieve the SAM/shadow file of a computer, install an OS, …) and/or for trolling.</p>
+
+<!---excerpt-break-->
+<p>The work has been divided in three steps :</p>
+
+<ul>
+  <li>Install a server with DHCP-PXE/TFTP/NFS</li>
+  <li>Install the guest system and adapt it to run from RAM</li>
+  <li>Optionally setting up a iPXE usb stick for computers without PXE support</li>
+</ul>
+
+<h2 id="the-server">The server</h2>
+
+<p>At first, I installed a server with Archlinux using the basic install.txt you find when using the install CD. (You can find more instructions on the Wiki : <a href="https://wiki.archlinux.org/index.php/Installation_guide">Installation Guide</a>.</p>
+
+<p>We need a TFTP server to deliver the bootfiles, I used <a href="https://www.archlinux.org/packages/?name=tftp-hpa">tftp-hpa</a>. The configuration is at <code class="highlighter-rouge">/etc/conf.d/tftpd</code> where you can set the root, which I set to <code class="highlighter-rouge">/</code> in order to test between different OSes without having to reboot <code class="highlighter-rouge">tftp-hpa</code> (It would having smarter to create a <code class="highlighter-rouge">/srv/pxe</code> folder with all my OSes inside).</p>
+
+<p>I tried using <a href="https://wiki.archlinux.org/index.php/dnsmasq">Dnsmasq</a> but as I am more used to <a href="https://wiki.archlinux.org/index.php/Dhcpd">dhcpd</a> I switched back to dhcpd.</p>
+
+<p>We would like dhcpd to offer IP that are not in the current subnet, I chose 10.239.0.0/24 as it was not used in my network.</p>
+
+<div><pre class="command-line" data-user="mr" data-host="server" data-output="">
+<code class="language-bash">pacman -S dhcp
+vim /etc/dhcpd.conf</code></pre></div>
+
+<p>The config file looks like this in my case :</p>
+
+<div><pre class="language-julia"><code class="language-julia">option domain-name "pxe";
+option domain-name-servers 8.8.8.8, 8.8.4.4;
+default-lease-time 600;
+max-lease-time 7200;
+log-facility local7;
+authoritative;
+
+subnet 10.239.0.0 netmask 255.255.255.0 {
+}
+host raminux {
+   hardware ethernet 00:11:22:33:44:55;
+   fixed-address 10.239.0.3;
+   filename "/pxeroot/boot/grub/i386-pc/core.0";
+   option routers 10.239.0.1;
+}
+host raminuxnopxe {
+   hardware ethernet 00:11:d8:c8:6e:d0;
+   fixed-address 10.239.0.2;
+   filename "http://10.239.0.1/pxeroot32/bootNFS.ipxe";
+   option routers 10.239.0.1;
+}
+</code></pre></div>
+
+<p>The 10.239.0.0/24 subnet is empty so it does not provide IP to any computer of the network and then the hosts are there so I can specify for which mac address I wish to deliver PXE boot.</p>
+
+<p>For Raminux I provide the core.0 file that I built with grub later on this article. For RaminuxNoPXE I provide a script file that iPXE will interpret.</p>
+
+<p>At this point computers can boot, request an IP and download the bootfile.</p>
+
+<p>My goal is to transfer the whole system file by file (so not compressed), TFTP is not really suited for this so I chose to install a NFS server.</p>
+
+<div><pre class="command-line" data-user="mr" data-host="server" data-output="">
+<code class="language-bash">pacman -S nfs-utils
+echo "/pxeroot   *(rw,fsid=0,no_root_squash,no_subtree_check)" &gt; /etc/exports
+echo "/pxeroot32 *(rw,fsid=1,no_root_squash,no_subtree_check)" &gt;&gt; /etc/exports
+exportfs -arv
+systemctl start nfs-idmapd
+systemctl start nfs-mountd</code></pre></div>
+<!--*-->
+
+<p>The OS folders are <code class="highlighter-rouge">/pxeroot</code> for the 64-bits version and <code class="highlighter-rouge">/pxeroot32</code> for the 32-bits version of the OS.</p>
+
+<h2 id="the-guests">The guests</h2>
+
+<p>Archlinux offers some scripts (like <code class="highlighter-rouge">pacstrap</code> and <code class="highlighter-rouge">arch-chroot</code>) to install a new Arch, so we need to install those scripts then we can install Archlinux to <code class="highlighter-rouge">/pxeroot32</code> for the 32-bits version.</p>
+
+<p><strong>BEWARE : You can install a 32-bits Archlinux only from a 32-bits host and same for 64-bits. If you want to install the 64-bits package from a 32-bits host a solution is to boot from an Archlinux live CD and choose the x86_64 kernel then mount the drive where /pxeroot resides and install the OS in it.</strong></p>
+
+<div><pre class="command-line" data-user="mr" data-host="server" data-output="">
+<code class="language-bash">pacman -S arch-install-scripts
+mkdir /pxeroot32
+pacstrap -d /pxeroot32 base vim openssh mkinitcpio-nfs-utils nfs-utils</code></pre></div>
+
+<p>Now that we have the base of a working system, we will generate its Initial RAM File System (initramfs).</p>
+
+<p><em>The initial ramdisk is in essence a very small environment (early userspace) which loads various kernel modules and sets up necessary things before handing over control to init. This makes it possible to have, for example, encrypted root file systems and root file systems on a software RAID array.</em></p>
+
+<p>Archlinux uses <code class="highlighter-rouge">mkinitcpio</code>, a script to forge the <code class="highlighter-rouge">initramfs.img</code> according to a configuration file which allows us to easily add modules or scripts.</p>
+
+<p>The initramfs will execute a script named <code class="highlighter-rouge">init</code>, which mounts the root filesystem and make it the new root of the system before executing the init process (which then starts the system).</p>
+
+<p>We want the system to be stored in RAM so we have to change the init script. It is located at <code class="highlighter-rouge">/usr/lib/initcpio/init</code>.</p>
+
+<p>Here is the diff of the changes I made. Most of the modifications here are inspired from <a href="https://bbs.archlinux.org/viewtopic.php?pid=1215085">this thread</a> of the Archlinux Forum with a few adjustments.</p>
+
+<div><pre class="language-bash">
+<code class="language-bash">49a50,55
+&gt; echo -e "Moving nfs root to /pxe_root"
+&gt; mkdir /pxe_root
+&gt; mount --move /new_root /pxe_root
+&gt; echo -e "Switching / to tmpfs..."
+&gt; mount -t tmpfs tmpfs /new_root -o size=80%
+&gt;
+51a58,85
+&gt;
+&gt; # Stop udevd if is running
+&gt; if [ "${udevd_running}" -eq 1 ]; then
+&gt;     udevadm control --exit
+&gt;     udevadm info --cleanup-db
+&gt; fi
+&gt;
+&gt; if [ "${break}" = "precopy" ]; then
+&gt;     echo ":: Pre-copy break requested, type 'exit' to resume operation"
+&gt;     launch_interactive_shell
+&gt; fi
+&gt;
+&gt; # Copy root
+&gt; echo -e "Copying root..."
+&gt; for i in $(ls -a /pxe_root); do
+&gt;       echo "Current copy : $i"
+&gt;       case "$i" in
+&gt;       .|..)   ;;
+&gt;       mnt)    mkdir /new_root/mnt;;
+&gt;       proc)   mkdir /new_root/proc;;
+&gt;       sys)    mkdir /new_root/sys;;
+&gt;       dev)    mkdir /new_root/dev;;
+&gt;       run)    mkdir /new_root/run;;
+&gt;       boot)   mkdir /new-root/boot;;
+&gt;       new_root)       ;;
+&gt;       *)              cp -a /pxe_root/$i /new_root
+&gt;       esac
+&gt; done</code></pre></div>
+<!--*-->
+
+<p>Then we have to load the <code class="highlighter-rouge">net</code> module so we can connect to NFS share. We just need to add the module to the <code class="highlighter-rouge">MODULE="..."</code> variable of <code class="highlighter-rouge">/etc/mkinitcpio.conf</code>. Here is what my mkinitcpio conf looks like :</p>
+
+<div><pre class="language-bash">
+<code class="language-bash">MODULES=""
+BINARIES=""
+FILES=""
+HOOKS="base udev net autodetect modconf block filesystems keyboard fsck"</code></pre></div>
+
+<p>We simply need to build the init RAM filesystem and configure grub and our system should work.</p>
+
+<div><pre class="command-line" data-user="mr" data-host="server" data-output="">
+<code class="language-bash">arch-chroot /pxeroot32 mkinitcpio -p linux
+arch-chroot /pxeroot32 pacman -Sy grub
+arch-chroot /pxeroot32 grub-mknetdir --net-directory=/boot --subdir=grub</code></pre></div>
+
+<p>We built the initramfs and the grub image, we configured our DHCP to load the correct grub <code class="highlighter-rouge">core.0</code> file. Our system is ready to rock !</p>
+
+<h2 id="optional--ipxe">Optional : iPXE</h2>
+
+<p>Once I finished this setup and successfully tested it in virtual environment, I tried it on an old computer which turned out to not have PXE support. <a href="http://ipxe.org/">iPXE</a> is a solution for that kind of problems and allows us to create a bootable usb stick capable of loading a PXE configuration and boot from it.</p>
+
+<p>To use iPXE, we have to download the sources and build them :</p>
+
+<div><pre class="command-line" data-user="mr" data-host="server" data-output="">
+<code class="language-bash">git clone git://git.ipxe.org/ipxe.git
+cd ipxe/src
+echo "#!ipxe" &gt; chooseServer.ipxe
+echo "set dhcp-server 10.239.0.1" &gt;&gt; chooseServer.ipxe
+echo "autoboot" &gt;&gt; chooseServer.ipxe
+make bin/ipxe.usb EMBED=chooseServer.ipxe
+dd if=bin/ipxe.usb of=/dev/sdX</code></pre></div>
+
+<p>I created a <a href="http://ipxe.org/scripting">script</a> in order to force the dhcp-server used (they are multiple DHCP servers on this subnet). You could here specify an IP configuration or a script to fetch via HTTP (this way you can change easily the script iPXE executes at boot).</p>
+
+<h2 id="resources">Resources</h2>
+
+<p>Useful resources I used to achieve this project :</p>
+
+<ul>
+  <li><a href="http://spblinux.de/2.0/doc/cp.html">http://spblinux.de/2.0/doc/cp.html</a></li>
+  <li><a href="https://wiki.archlinux.org/index.php/mkinitcpio#Using_net">https://wiki.archlinux.org/index.php/mkinitcpio#Using_net</a></li>
+  <li><a href="http://www.vidarholen.net/contents/blog/?tag=initramfs">http://www.vidarholen.net/contents/blog/?tag=initramfs</a></li>
+  <li><a href="https://bbs.archlinux.org/viewtopic.php?pid=1397136#p1397136">https://bbs.archlinux.org/viewtopic.php?pid=1397136#p1397136</a></li>
+  <li><a href="https://bbs.archlinux.org/viewtopic.php?pid=1215085">https://bbs.archlinux.org/viewtopic.php?pid=1215085</a></li>
+  <li><a href="https://github.com/openSUSE/kiwi/wiki/Setup-PXE-boot-with-EFI-Using-GRUB2">https://github.com/openSUSE/kiwi/wiki/Setup-PXE-boot-with-EFI-Using-GRUB2</a></li>
+</ul>
+
+
+</div>
+
+
+      <hr>
+
+      <div class="container">
+
+  <div class="row">
+
+    <div class="col-md-6">
+      <ul class="list-unstyled">
+        <li><a id="contactAdd"><i class="fa fa-envelope-o fa-fw"></i> mathieu at rousse d0t me</a></li>
+        <li><a href="/feed.xml"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      </ul>
+    </div>
+
+    <div class="col-md-6">
+      <div class="footer-col footer-col-2">
+        <ul class="list-unstyled">
+          
+          <li>
+            <a href="https://github.com/m-rousse"><i class="fa fa-github fa-fw"></i><span class="username">m-rousse</span></a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/roussemath"><i class="fa fa-twit-icon fa-fw"></i><span class="username">roussemath</span></a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://fr.linkedin.com/in/mathieurousse"><i class="fa fa-lin fa-fw"></i><span class="username">mathieurousse</span></a>
+          </li>
+          
+        </ul>
+      </div>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p class="text-muted">The blog of an IT and security enthusiast.</p>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="/js/LastLineUntilMidnight.min.js"></script>
+
+    </div>
+
+  </body>
+
+</html>
