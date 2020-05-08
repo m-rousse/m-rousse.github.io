@@ -11,10 +11,6 @@
   <link rel="stylesheet" href="{{ "/css/main.min.css" | prepend: site.baseurl }}">
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
-{% if site.debug == false %}
-<script type="text/javascript" src="{{ "/lib/needstats.js" | prepend: site.baseurl }}"></script>
-<noscript><p><img src="https://stats.rousse.me/need-stats/php?idsite=1" style="border:0;" alt="" /></p></noscript>
-{% endif %}
 <script type="application/ld+json">
 {
   "@context": "http://schema.org",

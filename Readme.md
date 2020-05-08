@@ -26,4 +26,5 @@ git add .
 gc -m 'Update blog '"$(date)"
 git push
 git checkout source
+docker stop blog
 ```
