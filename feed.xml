@@ -5,9 +5,21 @@
     <description>The blog of an IT and security enthusiast.</description>
     <link>https://math.rousse.me/</link>
     <atom:link href="https://math.rousse.me/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 08 May 2020 14:59:08 +0000</pubDate>
-    <lastBuildDate>Fri, 08 May 2020 14:59:08 +0000</lastBuildDate>
+    <pubDate>Thu, 21 May 2020 12:48:38 +0000</pubDate>
+    <lastBuildDate>Thu, 21 May 2020 12:48:38 +0000</lastBuildDate>
     <generator>Jekyll v3.1.6</generator>
+    
+      <item>
+        <title>Install a wireguard pod on kubernetes</title>
+        <description>How to build a docker image compatible with kubernetes CoreOS to host a wireguard service.</description>
+        <pubDate>Thu, 21 May 2020 09:27:32 +0000</pubDate>
+        <link>https://math.rousse.me/sysadmin/2020/05/21/wireguard-k8s.html</link>
+        <guid isPermaLink="true">https://math.rousse.me/sysadmin/2020/05/21/wireguard-k8s.html</guid>
+        
+        
+        <category>sysadmin</category>
+        
+      </item>
     
       <item>
         <title>Write-up (à chaud) du challenge badge de la Nuit du Hack</title>

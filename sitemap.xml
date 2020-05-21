@@ -3,6 +3,21 @@
   
     
     <url>
+      <loc>https://math.rousse.me/sysadmin/2020/05/21/wireguard-k8s.html</loc>
+      
+        <lastmod>2020-05-21T09:27:32+00:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
       <loc>https://math.rousse.me/challenge/2017/06/28/ndh-black-badge-challenge.html</loc>
       
         <lastmod>2017-06-28T19:27:37+00:00</lastmod>
@@ -145,7 +160,7 @@
     <url>
       <loc>https://math.rousse.me/</loc>
       
-        <lastmod>2020-05-08T14:59:08+00:00</lastmod>
+        <lastmod>2020-05-21T12:48:38+00:00</lastmod>
       
       
         <changefreq>monthly</changefreq>

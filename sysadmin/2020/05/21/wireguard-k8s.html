@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Install a wireguard pod on kubernetes</title>
+  <meta name="description" content="How to build a docker image compatible with kubernetes CoreOS to host a wireguard service.">
+  <meta name="keywords" content="blog, Mathieu Rousse, linux, pentest, challenge, ctf, writeup">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,300,500,600&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/css/main.min.css">
+  <link rel="canonical" href="https://math.rousse.me/sysadmin/2020/05/21/wireguard-k8s.html">
+  <link rel="alternate" type="application/rss+xml" title="Last code until midnight" href="https://math.rousse.me/feed.xml">
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Person",
+  "name": "Mathieu Rousse",
+  "url": "https://math.rousse.me",
+  "sameAs": [
+    "https://fr.linkedin.com/in/mathieurousse",
+    "https://plus.google.com/110154694510997957312"
+  ]
+}
+</script>
+</head>
+
+
+  <body>
+
+    <div class="container">
+
+      <div class="header clearfix">
+
+  <nav class="navbar navbar-light bg-faded" itemscope itemtype="http://schema.org/SiteNavigationElement">
+    <a class="navbar-brand" href="/">Last code until midnight</a>
+    <ul class="nav navbar-nav pull-right">
+      <li class="nav-item"><a class="nav-link" itemprop="url" href="/"><span itemprop="name">Home</span></a></li>
+      <li class="nav-item"><a class="nav-link" itemprop="url" href="/projects/"><span itemprop="name">Projects</span></a></li>
+      <li class="nav-item"><a class="nav-link" itemprop="url" href="/about/"><span itemprop="name">About</span></a></li>
+    </ul>
+  </nav>
+</div>
+
+
+      <div class="container">
+  <h1 class="title">Install a wireguard pod on kubernetes</h1>
+
+  <p class="title-date"><small class="text-muted">May 21, 2020</small></p>
+
+  <p>I used to have an OpenVPN network to connect to machines I could not/did not want to expose to internet, each new computer I wanted to connect was a matter of generating new RSA keys/certs, it was efficient and usable but a bit tedious to configure at times (the documentation is pretty well built so I found the answers to all my questions pretty often). I discovered <a href="https://www.wireguard.com/">wireguard</a> and decided to give it a try. This post is mostly to store the commands and configuration I used to get it working in a kubernetes environment.</p>
+
+<!---excerpt-break-->
+<h1 id="wireguard-image-for-kubernetes-running-under-coreos">Wireguard image for Kubernetes running under CoreOS</h1>
+
+<h2 id="preface">Preface</h2>
+
+<p>I wanted to make this post for a long time and have been using OVH K8S + wireguard for about a year now. The process I used to compile the module might not be absolutely up to date, for starters, it does not seem OVH uses CoreOS for its kubernetes services anymore, but an image based off Ubuntu. 
+Do not hesitate to reach out if you have questions!</p>
+
+<h2 id="context">Context</h2>
+
+<p>I host my services using a <a href="https://www.ovhcloud.com/en-gb/public-cloud/kubernetes/">managed Kubernetes cluster provided by OVH</a>. As wireguard works as a kernel module, it is necessary to have both the module and the permission to insert it in the runnign kernel.</p>
+
+<h2 id="the-module">The module</h2>
+
+<p>OVH uses coreOS to run their kubernetes clusters, so we need to build the module for this particular CoreOS version (ie. with the correct kernel version). Hopefully <a href="https://github.com/BugRoger/coreos-developer-docker">a coreos dev container</a> exists.</p>
+
+<h3 id="get-kernel-version-and-configuration">Get kernel version and configuration</h3>
+
+<p>I used the following configuration to get a pod up and running with an access to the host, allowing us to get both the kernel version used and its configuration:</p>
+
+<div class="language-yaml highlighter-rouge"><pre class="codehilite"><code><span class="s">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">Pod</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">toolbox-temporary-pod</span>
+  <span class="s">labels</span><span class="pi">:</span>
+    <span class="s">app</span><span class="pi">:</span> <span class="s">toolbox</span>
+<span class="s">spec</span><span class="pi">:</span>
+  <span class="s">containers</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">name</span><span class="pi">:</span> <span class="s">toolbox</span>
+    <span class="s">image</span><span class="pi">:</span> <span class="s">debian:buster</span>
+    <span class="s">command</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">sh'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">-c'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">(while</span><span class="nv"> </span><span class="s">true;</span><span class="nv"> </span><span class="s">do</span><span class="nv"> </span><span class="s">sleep</span><span class="nv"> </span><span class="s">1000;</span><span class="nv"> </span><span class="s">done)'</span><span class="pi">]</span>
+</code></pre></div>
+
+<p>Apply this configuration and get a shell to the container:</p>
+
+<div class="language-bash highlighter-rouge"><pre class="codehilite"><code>kubectl apply -f temporary-pod.yml
+kubectl <span class="nb">exec</span> -it toolbox-temporary-pod -- uname -a
+kubectl cp toolbox-temporary-pod:/proc/config.gz config.gz
+</code></pre></div>
+
+<p>From this command we got the version of the kernel (<code class="highlighter-rouge">4.14.96</code>) and the <code class="highlighter-rouge">config.gz</code> file of this kernel.</p>
+
+<p>Then this pod can be destroyed: <code class="highlighter-rouge">kubectl delete pod toolbox-temporary-pod</code>.</p>
+
+<h3 id="build-the-module">Build the module</h3>
+
+<p>From the kernel version it is possible to deduct the CoreOS version by searching for it in the <a href="https://coreos.com/releases/">release page</a>. In my case it is version <code class="highlighter-rouge">1967.6.0</code>.</p>
+
+<p>I used <a href="https://github.com/BugRoger/coreos-developer-docker#usage-in-docker">the dockerfile</a> provided by BugRoger in the repo and adapted it a bit to fit with wireguard module..</p>
+
+<pre><code class="language-dockerfile">ARG COREOS_VERSION=1967.6.0
+FROM bugroger/coreos-developer:${COREOS_VERSION} as BUILD
+
+ENV WIREGUARD_VERSION=0.0.20180918
+
+RUN emerge-gitclone
+RUN emerge -gKv coreos-sources
+COPY config.gz /root/config.gz
+RUN gzip -cd /root/config.gz &gt; /usr/src/linux/.config
+RUN make -C /usr/src/linux modules_prepare
+
+RUN export filename=WireGuard-${WIREGUARD_VERSION} &amp;&amp; \
+  wget https://git.zx2c4.com/WireGuard/snapshot/$filename.tar.xz &amp;&amp; \
+  tar xf $filename.tar.xz &amp;&amp; \
+  KERNELDIR=/lib/modules/4.14.96-coreos-r1/build make -C /$filename/src &amp;&amp; \
+  mkdir /build &amp;&amp; \
+  cp /$filename/src/wireguard.ko /build &amp;&amp; \
+  cp /$filename/src/tools/wg /build
+
+FROM debian:buster-slim
+RUN mkdir -p /opt/wireguard &amp;&amp; \
+  apt update &amp;&amp; \
+  apt install -yq iproute2 kmod
+COPY --from=BUILD /build /opt/wireguard
+COPY entrypoint.sh /entrypoint.sh
+EXPOSE 5555
+ENTRYPOINT /entrypoint.sh
+CMD ['/bin/sh']
+</code></pre>
+
+<p>When building this image, the module gets built and passed to the wireguard image which is then ready to be started.</p>
+
+<h2 id="the-wireguard-container">The wireguard container</h2>
+
+<p>As you can see the the previous dockerfile definition, I added an <code class="highlighter-rouge">entrypoint.sh</code> file to start the wireguard container properly.</p>
+
+<p>This script will load the kernel module if it is not already loaded and configure the firewall/networking:</p>
+
+<div class="language-bash highlighter-rouge"><pre class="codehilite"><code><span class="c">#!/bin/sh</span>
+
+<span class="k">if </span>lsmod | grep <span class="s2">"wireguard"</span> &amp;&gt; /dev/null ; <span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"Module already loaded"</span>
+<span class="k">else
+  </span>insmod /opt/wireguard/wireguard.ko
+<span class="k">fi
+
+</span>apt install -yq procps iptables
+ip link add dev wg0 <span class="nb">type </span>wireguard
+ip address add dev wg0 10.0.0.1/24
+/opt/wireguard/wg setconf wg0 /etc/wireguard.conf
+ip l <span class="nb">set </span>dev wg0 up
+sysctl net.ipv4.ip_forward<span class="o">=</span>1
+iptables -A FORWARD -i wg0 -j ACCEPT
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+<span class="nb">exec</span> /bin/bash -c <span class="s2">"trap : TERM INT; sleep infinity &amp; wait"</span>
+</code></pre></div>
+
+<p>Last but not least, the kubernetes deployment to run this server. As the container must be able to load a module in the kernel the <code class="highlighter-rouge">SYS_MODULE</code> capability is needed and to be able to set a firewall up using iptables, the <code class="highlighter-rouge">NET_ADMIN</code> capability is needed.</p>
+
+<p>At the time of this post, OVH does not support UDP load balancers so I had to use a NodePort to expose this service (to ease configuration of clients, I used a domain name to redirect to the host, so when rotating the Node I only needed to update the DNS).</p>
+
+<p>The configmap was used to ease updating the config to add more clients, instead of having it a temporary file in the container or a file built in the image.</p>
+
+<div class="language-yml highlighter-rouge"><pre class="codehilite"><code><span class="s">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">wireguard</span>
+  <span class="s">labels</span><span class="pi">:</span>
+    <span class="s">app</span><span class="pi">:</span> <span class="s">wireguard</span>
+<span class="s">spec</span><span class="pi">:</span>
+  <span class="s">replicas</span><span class="pi">:</span> <span class="s">1</span>
+  <span class="s">selector</span><span class="pi">:</span>
+    <span class="s">matchLabels</span><span class="pi">:</span>
+      <span class="s">app</span><span class="pi">:</span> <span class="s">wireguard</span>
+  <span class="s">template</span><span class="pi">:</span>
+    <span class="s">metadata</span><span class="pi">:</span>
+      <span class="s">labels</span><span class="pi">:</span>
+        <span class="s">app</span><span class="pi">:</span> <span class="s">wireguard</span>
+    <span class="s">spec</span><span class="pi">:</span>
+      <span class="s">containers</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">name</span><span class="pi">:</span> <span class="s">wireguard</span>
+        <span class="s">image</span><span class="pi">:</span> <span class="s">my-custom-registry/wireguard:latest</span>
+        <span class="s">securityContext</span><span class="pi">:</span>
+          <span class="s">capabilities</span><span class="pi">:</span>
+            <span class="s">add</span><span class="pi">:</span>
+              <span class="pi">-</span> <span class="s">NET_ADMIN</span>
+              <span class="pi">-</span> <span class="s">SYS_MODULE</span>
+          <span class="s">privileged</span><span class="pi">:</span> <span class="s">true</span>
+        <span class="s">volumeMounts</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="s">name</span><span class="pi">:</span> <span class="s">configuration</span>
+            <span class="s">mountPath</span><span class="pi">:</span> <span class="s">/etc/wireguard.conf</span>
+            <span class="s">subPath</span><span class="pi">:</span> <span class="s">wireguard.conf</span>
+        <span class="s">ports</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">containerPort</span><span class="pi">:</span> <span class="s">5555</span>
+          <span class="s">protocol</span><span class="pi">:</span> <span class="s">UDP</span>
+        <span class="s">resources</span><span class="pi">:</span>
+          <span class="s">requests</span><span class="pi">:</span>
+            <span class="s">memory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">64Mi"</span>
+            <span class="s">cpu</span><span class="pi">:</span> <span class="s2">"</span><span class="s">100m"</span>
+          <span class="s">limits</span><span class="pi">:</span>
+            <span class="s">memory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">128Mi"</span>
+            <span class="s">cpu</span><span class="pi">:</span> <span class="s2">"</span><span class="s">200m"</span>
+      <span class="s">imagePullSecrets</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">name</span><span class="pi">:</span> <span class="s">regcred</span>
+      <span class="s">volumes</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">name</span><span class="pi">:</span> <span class="s">configuration</span>
+          <span class="s">configMap</span><span class="pi">:</span>
+            <span class="s">name</span><span class="pi">:</span> <span class="s">wireguard-config</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">Service</span>
+<span class="s">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">labels</span><span class="pi">:</span>
+    <span class="s">k8s-app</span><span class="pi">:</span> <span class="s">wireguard</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">wireguard</span>
+  <span class="s">namespace</span><span class="pi">:</span> <span class="s">default</span>
+<span class="s">spec</span><span class="pi">:</span>
+  <span class="s">type</span><span class="pi">:</span> <span class="s">NodePort</span>
+  <span class="s">ports</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">port</span><span class="pi">:</span> <span class="s">5555</span>
+    <span class="s">nodePort</span><span class="pi">:</span> <span class="s">32766</span>
+    <span class="s">protocol</span><span class="pi">:</span> <span class="s">UDP</span>
+    <span class="s">targetPort</span><span class="pi">:</span> <span class="s">5555</span>
+  <span class="s">selector</span><span class="pi">:</span>
+    <span class="s">app</span><span class="pi">:</span> <span class="s">wireguard</span>
+<span class="s">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="s">kind</span><span class="pi">:</span> <span class="s">ConfigMap</span>
+<span class="s">metadata</span><span class="pi">:</span>
+  <span class="s">labels</span><span class="pi">:</span>
+    <span class="s">addonmanager.kubernetes.io/mode</span><span class="pi">:</span> <span class="s">EnsureExists</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">wireguard-config</span>
+  <span class="s">namespace</span><span class="pi">:</span> <span class="s">default</span>
+<span class="s">data</span><span class="pi">:</span>
+  <span class="s">wireguard.conf</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="no">[Interface]</span>
+    <span class="no">PrivateKey = PrIvAtE/KeY+SeRvEr==</span>
+    <span class="no">ListenPort = 5555</span>
+
+    <span class="no">[Peer]</span>
+    <span class="no">PublicKey = PuBlIc/KeY+ClIeNt1==</span>
+    <span class="no">AllowedIPs = 10.0.0.2/32</span>
+
+    <span class="no">[Peer]</span>
+    <span class="no">PublicKey = PuBlIc/KeY+ClIeNt2==</span>
+    <span class="no">AllowedIPs = 10.0.0.3/32</span>
+
+</code></pre></div>
+
+
+</div>
+
+
+      <hr>
+
+      <div class="container">
+
+  <div class="row">
+
+    <div class="col-md-6">
+      <ul class="list-unstyled">
+        <li><a id="contactAdd"><i class="fa fa-envelope-o fa-fw"></i> mathieu at rousse d0t me</a></li>
+        <li><a href="/feed.xml"><i class="fa fa-rss fa-fw"></i>RSS</a></li>
+      </ul>
+    </div>
+
+    <div class="col-md-6">
+      <div class="footer-col footer-col-2">
+        <ul class="list-unstyled">
+          
+          <li>
+            <a href="https://github.com/m-rousse"><i class="fa fa-github fa-fw"></i><span class="username">m-rousse</span></a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/roussemath"><i class="fa fa-twit-icon fa-fw"></i><span class="username">roussemath</span></a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://fr.linkedin.com/in/mathieurousse"><i class="fa fa-lin fa-fw"></i><span class="username">mathieurousse</span></a>
+          </li>
+          
+        </ul>
+      </div>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p class="text-muted">The blog of an IT and security enthusiast.</p>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="/js/LastLineUntilMidnight.min.js"></script>
+
+    </div>
+
+  </body>
+
+</html>
