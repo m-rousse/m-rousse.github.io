@@ -6,6 +6,8 @@ module.exports = function (grunt) {
     require('time-grunt')(grunt);
     // Load all Grunt tasks that are listed in package.json automagically
     require('load-grunt-tasks')(grunt);
+
+    const sass = require('node-sass');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-image-resize');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
@@ -40,6 +42,7 @@ module.exports = function (grunt) {
             options: {
                 sourceMap: true,
                 relativeAssets: false,
+                implementation: sass,
                 outputStyle: 'expanded',
                 sassDir: '_sass',
                 cssDir: '_site/css'
