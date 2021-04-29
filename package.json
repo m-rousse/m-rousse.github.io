@@ -15,7 +15,7 @@
     "grunt-image-resize": "^1.0.0",
     "grunt-sass": "^3.1.0",
     "grunt-shell": "^1.2.1",
-    "jquery": "^3.5.0",
+    "jquery": "^2.0.0",
     "lightbox2": "^2.8.2",
     "load-grunt-tasks": "^3.4.1",
     "node-sass": "^5.0.0",
