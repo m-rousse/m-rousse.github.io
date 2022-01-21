@@ -23,10 +23,27 @@
     ]
   }
   </script>
-  <script type="text/javascript">
-  /*  -- Wisdom -- Start of Snippet v1.0 (www.GetWisdom.io) -- */
-  !function(W,I,S,D,O,M){"use strict";if(S.__WISDOM__INIT__OBJECT_REFERENCE=W,!(W in S)){var f=S[W]=function(){arguments.length&&f.q.push({args:arguments,ts:new Date})};f.ts=new Date,f.q=[],f.flag=function(){return null};var g=D.createElement("script");g.src="https://script.getwisdom.io/v"+(I|0),g.type="text/javascript",g.charset="UTF-8",g.crossOrigin="anonymous",g.async=!0;var h=D.getElementsByTagName("script")[0];h.parentNode.insertBefore(g,h)}}("wisdom",1,window,document);
-  wisdom('init', 871); // <-- Your ProjectId is included here.
-  /*  -- Wisdom -- End of Snippet -- */
+  <script>
+    (function(h,o,u,n,d) {
+      h=h[d]=h[d]||{q:[],onReady:function(c){h.q.push(c)}}
+      d=o.createElement(u);d.async=1;d.src=n
+      n=o.getElementsByTagName(u)[0];n.parentNode.insertBefore(d,n)
+    })(window,document,'script','https://www.datadoghq-browser-agent.com/datadog-rum-v4.js','DD_RUM')
+    DD_RUM.onReady(function() {
+      DD_RUM.init({
+        clientToken: 'pub5e022b5673a75a3e62659ed01005bfb2',
+        applicationId: 'c5f01a98-9117-42ce-8ca1-35cb8fac73a5',
+        site: 'datadoghq.com',
+        service:'personal-blog',
+        env:'prod',
+        // Specify a version number to identify the deployed version of your application in Datadog
+        // version: '1.0.0',
+        sampleRate: 100,
+        trackInteractions: true,
+        defaultPrivacyLevel: 'mask-user-input'
+      });
+
+      DD_RUM.startSessionReplayRecording();
+    })
   </script>
 </head>
