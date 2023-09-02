@@ -9,7 +9,7 @@ github_username:  m-rousse
 linkedin_username:  mathieurousse
 debug: false
 charset: utf-8
-gems:
+plugins:
   - jekyll-gist
   - jekyll-read-more
 
