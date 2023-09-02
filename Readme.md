@@ -9,10 +9,10 @@ function buildBlog {
   docker build . -t blog:latest
   docker run --rm -d --name blog blog:latest
   git checkout master
-  rm * -rf
+  rm -rf *
   docker cp blog:'/usr/share/nginx/html/' .
   mv html/* .
-  rm html -rf
+  rm -rf html
   git add .
   gc -m 'Update blog '"$(date)"
   git push
