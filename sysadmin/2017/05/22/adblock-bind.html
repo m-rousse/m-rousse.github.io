@@ -22,7 +22,7 @@
     "url": "https://math.rousse.me",
     "sameAs": [
       "https://fr.linkedin.com/in/mathieurousse",
-      "https://plus.google.com/110154694510997957312"
+      "https://github.com/m-rousse"
     ]
   }
   </script>
@@ -74,15 +74,15 @@
 
   <p class="title-date"><small class="text-muted">May 22, 2017</small></p>
 
-  <p>My smartphone is under android and used to be rooted. Many applications refuse to start if they detect that the phone has been rooted (either via scanning running processes or simply by looking for a <code class="highlighter-rouge">su</code> executable).</p>
+  <p>My smartphone is under android and used to be rooted. Many applications refuse to start if they detect that the phone has been rooted (either via scanning running processes or simply by looking for a <code class="language-plaintext highlighter-rouge">su</code> executable).</p>
 
 <p>On the other hand, I do not like advertisements and find more and more of them in the applications I use every day.</p>
 
 <!---excerpt-break-->
 
-<p>The first solution I chose was <a href="https://adaway.org/">AdAway</a>, which needed root permissions, but was quite efficient. It adds to the <code class="highlighter-rouge">/etc/hosts</code> file entries to redirect the domain names used by advertisements companies to <code class="highlighter-rouge">localhost</code> (which does not run any webserver). It worked great until I wanted to use an application enemy of rooted phones.</p>
+<p>The first solution I chose was <a href="https://adaway.org/">AdAway</a>, which needed root permissions, but was quite efficient. It adds to the <code class="language-plaintext highlighter-rouge">/etc/hosts</code> file entries to redirect the domain names used by advertisements companies to <code class="language-plaintext highlighter-rouge">localhost</code> (which does not run any webserver). It worked great until I wanted to use an application enemy of rooted phones.</p>
 
-<p>So the second solution I came up with was to set up a DNS server that would resolve the domain names of advertisements companies to <code class="highlighter-rouge">localhost</code>, and to set my phone to use this DNS server instead.</p>
+<p>So the second solution I came up with was to set up a DNS server that would resolve the domain names of advertisements companies to <code class="language-plaintext highlighter-rouge">localhost</code>, and to set my phone to use this DNS server instead.</p>
 
 <blockquote>
   <p>I will not describe how to set up a DNS server nor how to configure the phone to use the DNS server (it could be an internet accessible server, LAN only or even through a VPN).</p>
@@ -92,7 +92,7 @@
 
 <script src="https://gist.github.com/m-rousse/e126f628f3f8994ef515079d8426965a.js"> </script>
 
-<p>It generates a big <code class="highlighter-rouge">blacklisted.zones</code> file with for each domain an entry like so :</p>
+<p>It generates a big <code class="language-plaintext highlighter-rouge">blacklisted.zones</code> file with for each domain an entry like so :</p>
 
 <div><pre class="language-bash line-numbers">
 <code class="language-bash">...
@@ -107,7 +107,7 @@ check-names slave  ignore;
 
 include "/path/to/blacklisted.zones";</code></pre></div>
 
-<p>To finish, you need the <code class="highlighter-rouge">sinkhole.zone</code> file that resolves the domain to <code class="highlighter-rouge">localhost</code>.</p>
+<p>To finish, you need the <code class="language-plaintext highlighter-rouge">sinkhole.zone</code> file that resolves the domain to <code class="language-plaintext highlighter-rouge">localhost</code>.</p>
 
 <div><pre class="language-bash line-numbers">
 <code class="language-bash">$TTL 86400

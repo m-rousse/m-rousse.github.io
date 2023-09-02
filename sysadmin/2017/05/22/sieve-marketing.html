@@ -22,7 +22,7 @@
     "url": "https://math.rousse.me",
     "sameAs": [
       "https://fr.linkedin.com/in/mathieurousse",
-      "https://plus.google.com/110154694510997957312"
+      "https://github.com/m-rousse"
     ]
   }
   </script>
@@ -80,8 +80,8 @@
 
 <!---excerpt-break-->
 
-<div class="highlighter-rouge"><pre class="codehilite"><code>http://xxxx.srvn.list-manage1.com/track/click?u=yyyyyyyy&amp;id=zzzzzzzz&amp;e=ppppppppp
-</code></pre></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://xxxx.srvn.list-manage1.com/track/click?u=yyyyyyyy&amp;id=zzzzzzzz&amp;e=ppppppppp
+</code></pre></div></div>
 
 <p>This bothers me as I do not know where I will be redirected. So I used Sieve and python to rewrite the links back.</p>
 
@@ -109,13 +109,13 @@ if header :contains "from" "marketing@campain.thx"
     filter "filter.py";
 }</code></pre></div>
 
-<p>Then we need to create the python script at : <code class="highlighter-rouge">/folder/to/sieve/scripts/filter.py</code>. It reads the e-mail in MIME format from <code class="highlighter-rouge">stdin</code>, then parses for URLs. I chose the regex to catch links to other sites, link to the 1px image that indicates that I read the e-mail and link to unsuscribe (as I do not want my script to unsuscribe by mistake).</p>
+<p>Then we need to create the python script at : <code class="language-plaintext highlighter-rouge">/folder/to/sieve/scripts/filter.py</code>. It reads the e-mail in MIME format from <code class="language-plaintext highlighter-rouge">stdin</code>, then parses for URLs. I chose the regex to catch links to other sites, link to the 1px image that indicates that I read the e-mail and link to unsuscribe (as I do not want my script to unsuscribe by mistake).</p>
 
-<p>For each link to another website, it does a request and retrieves the <code class="highlighter-rouge">Location</code> header and replaces the link with this new URL. For the other links, it replaces them with a link to Google.</p>
+<p>For each link to another website, it does a request and retrieves the <code class="language-plaintext highlighter-rouge">Location</code> header and replaces the link with this new URL. For the other links, it replaces them with a link to Google.</p>
 
 <script src="https://gist.github.com/m-rousse/89a4128edaa52d6e227221d47e017d1e.js"> </script>
 
-<p>The last thing to note is that the e-mail should be sent back to <code class="highlighter-rouge">stdout</code> in MIME format.</p>
+<p>The last thing to note is that the e-mail should be sent back to <code class="language-plaintext highlighter-rouge">stdout</code> in MIME format.</p>
 
 <p>Enjoy your e-mails with comprehensible links :)</p>
 

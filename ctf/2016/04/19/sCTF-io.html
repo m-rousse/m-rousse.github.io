@@ -22,7 +22,7 @@
     "url": "https://math.rousse.me",
     "sameAs": [
       "https://fr.linkedin.com/in/mathieurousse",
-      "https://plus.google.com/110154694510997957312"
+      "https://github.com/m-rousse"
     ]
   }
   </script>
@@ -161,12 +161,12 @@ vaddr=0x00400763 paddr=0x00000763 ordinal=001 sz=26 len=25 section=.rodata type=
 <p>The steps :</p>
 
 <ul>
-  <li><code class="highlighter-rouge">aaa</code> : First, analyze all the program fonctions</li>
-  <li><code class="highlighter-rouge">ìz</code> : Then print all the strings of the program</li>
-  <li><code class="highlighter-rouge">pd 10 @ 0x00400744-5</code>: We show the disassembly around one of the strings. We see that “What is the magic password” is used in <code class="highlighter-rouge">main</code> at 0x00400677</li>
-  <li><code class="highlighter-rouge">s 0x00400677</code> : So we move to 0x00400677</li>
-  <li><code class="highlighter-rouge">pdf @ 0x00400677</code> : And we print the disassembly of the function (main).</li>
-  <li>There, we can see the password is compared to <code class="highlighter-rouge">0x5b74</code> as a numerical value. The password is then this value in decimal : 23412</li>
+  <li><code class="language-plaintext highlighter-rouge">aaa</code> : First, analyze all the program fonctions</li>
+  <li><code class="language-plaintext highlighter-rouge">ìz</code> : Then print all the strings of the program</li>
+  <li><code class="language-plaintext highlighter-rouge">pd 10 @ 0x00400744-5</code>: We show the disassembly around one of the strings. We see that “What is the magic password” is used in <code class="language-plaintext highlighter-rouge">main</code> at 0x00400677</li>
+  <li><code class="language-plaintext highlighter-rouge">s 0x00400677</code> : So we move to 0x00400677</li>
+  <li><code class="language-plaintext highlighter-rouge">pdf @ 0x00400677</code> : And we print the disassembly of the function (main).</li>
+  <li>There, we can see the password is compared to <code class="language-plaintext highlighter-rouge">0x5b74</code> as a numerical value. The password is then this value in decimal : 23412</li>
 </ul>
 
 <p>We found our password, let’s feed it to the binary :</p>
@@ -179,7 +179,7 @@ Correct! Your flag is: h4x0r!!!</code></pre></div>
 
 <p>We did it !</p>
 
-<p><code class="highlighter-rouge">flag : sctf{h4x0r!!!}</code></p>
+<p><code class="language-plaintext highlighter-rouge">flag : sctf{h4x0r!!!}</code></p>
 
 <h3 id="ducks">Ducks</h3>
 
@@ -200,7 +200,7 @@ foreach($file as $line){
 echo "\n";
 </code></pre></div>
 
-<p>Which gave us the <code class="highlighter-rouge">flag : sctf{101_th3_numb3r5_d1dn'7_3v3n_m4tt3r}</code></p>
+<p>Which gave us the <code class="language-plaintext highlighter-rouge">flag : sctf{101_th3_numb3r5_d1dn'7_3v3n_m4tt3r}</code></p>
 
 <h3 id="rain-or-shine">Rain or Shine</h3>
 
@@ -222,13 +222,13 @@ DECIMAL       HEXADECIMAL     DESCRIPTION
 5832748       0x59002C        Unix path: /ns.adobe.com/xap/1.0/mm/"
 5832806       0x590066        Unix path: /ns.adobe.com/xap/1.0/sType/ResourceEvent#"&gt;</code></pre></div>
 
-<p>There we see that there is a TIFF header at 0x58FD00. So I extract it with <code class="highlighter-rouge">dd if=rain.wav of=writeup.tiff bs=1 skip=5831936</code> which gives me this image :</p>
+<p>There we see that there is a TIFF header at 0x58FD00. So I extract it with <code class="language-plaintext highlighter-rouge">dd if=rain.wav of=writeup.tiff bs=1 skip=5831936</code> which gives me this image :</p>
 
 <div class="lightboximg"><a href="/images/sctfio-2016q1-rain-scrambled.png " data-lightbox="lightbox-image" class="lightboximg"><img src="/thumbs/sctfio-2016q1-rain-scrambled.png " class="lightboximg" /></a></div>
 
 <p>We can clearly recognize a QR Code, but it looks scrambled.</p>
 
-<p>After a few minutes of paint, I achieved reconstructing the original QR Code which gives me the <code class="highlighter-rouge">flag : sctf{5t3g0n4gr4phy_i5_fun_r1t3?}</code></p>
+<p>After a few minutes of paint, I achieved reconstructing the original QR Code which gives me the <code class="language-plaintext highlighter-rouge">flag : sctf{5t3g0n4gr4phy_i5_fun_r1t3?}</code></p>
 
 <h3 id="musical-penguins">Musical Penguins</h3>
 
@@ -237,16 +237,16 @@ DECIMAL       HEXADECIMAL     DESCRIPTION
 <ul>
   <li>Export the file to xml</li>
   <li>Open it with vim</li>
-  <li>Let’s remove all useless lines: <code class="highlighter-rouge">:%v/fret/d</code></li>
-  <li>Remove everything that is not a number: <code class="highlighter-rouge">:%s/&lt;fret&gt;//g</code> and <code class="highlighter-rouge">:%s/&lt;\/fret&gt;//g</code> and <code class="highlighter-rouge">:%s/\n//g</code></li>
-  <li>There is a 5 in the middle that stands for a 1 (measure 149): <code class="highlighter-rouge">:%s/5/1/g</code></li>
-  <li>Replace 2 with dot and 1 with dash: <code class="highlighter-rouge">:%s/2/./g</code> and <code class="highlighter-rouge">:%s/1/-/g</code></li>
-  <li>Space every group of 5 char : <code class="highlighter-rouge">qa</code> four times <code class="highlighter-rouge">right arrow</code> then <code class="highlighter-rouge">a &lt;space&gt; &lt;esc&gt; &lt;right arrow&gt; q</code> and finally <code class="highlighter-rouge">145@a</code> (145 because they are 730 char).</li>
+  <li>Let’s remove all useless lines: <code class="language-plaintext highlighter-rouge">:%v/fret/d</code></li>
+  <li>Remove everything that is not a number: <code class="language-plaintext highlighter-rouge">:%s/&lt;fret&gt;//g</code> and <code class="language-plaintext highlighter-rouge">:%s/&lt;\/fret&gt;//g</code> and <code class="language-plaintext highlighter-rouge">:%s/\n//g</code></li>
+  <li>There is a 5 in the middle that stands for a 1 (measure 149): <code class="language-plaintext highlighter-rouge">:%s/5/1/g</code></li>
+  <li>Replace 2 with dot and 1 with dash: <code class="language-plaintext highlighter-rouge">:%s/2/./g</code> and <code class="language-plaintext highlighter-rouge">:%s/1/-/g</code></li>
+  <li>Space every group of 5 char : <code class="language-plaintext highlighter-rouge">qa</code> four times <code class="language-plaintext highlighter-rouge">right arrow</code> then <code class="language-plaintext highlighter-rouge">a &lt;space&gt; &lt;esc&gt; &lt;right arrow&gt; q</code> and finally <code class="language-plaintext highlighter-rouge">145@a</code> (145 because they are 730 char).</li>
   <li>Using an online morse decoder, we then have a string of numbers between 0 and 6.</li>
   <li>Using the same method than above, we can cut the string into groups of 3 numbers and then convert them from base 7 to base 16 and read the ascii corresponding char</li>
 </ul>
 
-<p>Finally, the <code class="highlighter-rouge">flag : sctf{1_u53d_t0_m4k3_mu51c_w1th_th15_4ll_th3_t1m3}</code></p>
+<p>Finally, the <code class="language-plaintext highlighter-rouge">flag : sctf{1_u53d_t0_m4k3_mu51c_w1th_th15_4ll_th3_t1m3}</code></p>
 
 <h3 id="rev2">Rev2</h3>
 
@@ -320,7 +320,7 @@ vaddr=0x004007c3 paddr=0x000007c3 ordinal=001 sz=26 len=25 section=.rodata type=
 
 <p>We used the same way we used for Rev1 : look for strings, look where they are used, read the code around.</p>
 
-<p>This time the code was very easy to understand : right after the <code class="highlighter-rouge">scanf</code> there is a comparison then a jump. It jumps only if the password is not equal to <code class="highlighter-rouge">0x30dda83</code>. So we feed it as a base 10 number to the binary.</p>
+<p>This time the code was very easy to understand : right after the <code class="language-plaintext highlighter-rouge">scanf</code> there is a comparison then a jump. It jumps only if the password is not equal to <code class="language-plaintext highlighter-rouge">0x30dda83</code>. So we feed it as a base 10 number to the binary.</p>
 
 <div><pre class="command-line" data-user="mr" data-host="sopasoda" data-output="2-99">
 <code class="language-bash">./rev2
@@ -328,7 +328,7 @@ What is the magic password?
 51239555
 Correct! Your flag is: 51196695</code></pre></div>
 
-<p>That’s it : <code class="highlighter-rouge">flag : sctf{51196695}</code></p>
+<p>That’s it : <code class="language-plaintext highlighter-rouge">flag : sctf{51196695}</code></p>
 
 <h3 id="secure-text-saver">Secure Text Saver</h3>
 
@@ -369,9 +369,9 @@ javax/swing/JFrame
 Login | Sign Up
 ... lot of text ...</code></pre></div>
 
-<p>While reading the strings found in the <code class="highlighter-rouge">Login_Page.class</code> file, we found the nickname of the author of the challenge, we tried this username and the following line as password. And it worked !</p>
+<p>While reading the strings found in the <code class="language-plaintext highlighter-rouge">Login_Page.class</code> file, we found the nickname of the author of the challenge, we tried this username and the following line as password. And it worked !</p>
 
-<p><code class="highlighter-rouge">flag : sctf{w0w_th4t_w45_pr377y_e45y}</code></p>
+<p><code class="language-plaintext highlighter-rouge">flag : sctf{w0w_th4t_w45_pr377y_e45y}</code></p>
 
 <h3 id="cookies">Cookies</h3>
 
@@ -404,15 +404,15 @@ equals
 success! it's working!
 ... Lot of text ...</code></pre></div>
 
-<p>A quick overview allows us to find a md5 hash. A simple search with google gives us the plain text : <code class="highlighter-rouge">thisisaverystrongpassword</code></p>
+<p>A quick overview allows us to find a md5 hash. A simple search with google gives us the plain text : <code class="language-plaintext highlighter-rouge">thisisaverystrongpassword</code></p>
 
-<p>We then can input this password into the application, which gives us the following flag : <code class="highlighter-rouge">flag: sctf{g3t_y0ur_h4nd_0ut_0f_my_c00k13_j4r!}</code></p>
+<p>We then can input this password into the application, which gives us the following flag : <code class="language-plaintext highlighter-rouge">flag: sctf{g3t_y0ur_h4nd_0ut_0f_my_c00k13_j4r!}</code></p>
 
 <h3 id="tracking">Tracking</h3>
 
 <p>For this challenge, we have to trilaterate a few devices’ position knowing their distance from 4 satellites and the satelittes’ position.</p>
 
-<p>In the <code class="highlighter-rouge">description.txt</code> file we have the equations between the position (x,y,z) and the distances (d1, d2, d3, d4) to the satellites. I rewrote those equations a little to have simple equations for the coordinates.</p>
+<p>In the <code class="language-plaintext highlighter-rouge">description.txt</code> file we have the equations between the position (x,y,z) and the distances (d1, d2, d3, d4) to the satellites. I rewrote those equations a little to have simple equations for the coordinates.</p>
 
 <p>I wrote a small script in PHP for this task :</p>
 
@@ -450,7 +450,7 @@ foreach($data as $k =&gt; $l){
 
 echo "FINAL : sctf{".ceil($x_tot/count($data)).", ".ceil($y_tot/count($data)).", ".ceil($z_tot/count($data))."}\n";</code></pre></div>
 
-<p>Which computes the flag : <code class="highlighter-rouge">flag: sctf{537, 516, 487}</code></p>
+<p>Which computes the flag : <code class="language-plaintext highlighter-rouge">flag: sctf{537, 516, 487}</code></p>
 
 <h3 id="verticode">Verticode</h3>
 
@@ -524,16 +524,16 @@ echo $str;
 
 <p>This scripts outputs this string :</p>
 
-<p><code class="highlighter-rouge">Joe Lopo was a man of mild temperament ... too much text ... Lobo into a lair of pitch blackness found to be a parallel dimension that caus ABCiamtheflagalllowercasenojokeDEF
+<p><code class="language-plaintext highlighter-rouge">Joe Lopo was a man of mild temperament ... too much text ... Lobo into a lair of pitch blackness found to be a parallel dimension that caus ABCiamtheflagalllowercasenojokeDEF
 anyone whose first name began with J along with M L and Q to become rather uncomfortable Joe was also suddenly introduced to undroclamaticolomphasisciousy the eccentric tapeworm with a strong morrocanaccent I mundroclamaticolomphasisciousy the eccentric tapeworm I like pizza so how are ya doin I have no idea said Joe</code></p>
 
-<p>I added by hand spaces to make it more understandable. And we have our flag : <code class="highlighter-rouge">flag: sctf{iamtheflagalllowercasenojoke}</code></p>
+<p>I added by hand spaces to make it more understandable. And we have our flag : <code class="language-plaintext highlighter-rouge">flag: sctf{iamtheflagalllowercasenojoke}</code></p>
 
 <h3 id="vertinet">Vertinet</h3>
 
 <p>Vertinet is following the Verticode challenge as it uses the same coding for strings but we need to communicate with a server and to solve a few of them automatically to solve it.</p>
 
-<p>This one took a little more time as I had difficulties communicating with the server. I used the same code as in Verticode, and wrapped the main code into a new function <code class="highlighter-rouge">decode</code> which takes an image and outputs the decoded string. I also added a <code class="highlighter-rouge">resolve</code> function to split the answer I received from the server and keep only the interesting part : the image.</p>
+<p>This one took a little more time as I had difficulties communicating with the server. I used the same code as in Verticode, and wrapped the main code into a new function <code class="language-plaintext highlighter-rouge">decode</code> which takes an image and outputs the decoded string. I also added a <code class="language-plaintext highlighter-rouge">resolve</code> function to split the answer I received from the server and keep only the interesting part : the image.</p>
 
 <p>Then I added the connection to the challenge server and the automatic resolve and answer to the server. I added logging to follow what is going on between my script and the server.</p>
 
@@ -600,7 +600,7 @@ while(true){
 echo "The END\n";
 socket_close($socket);</code></pre></div>
 
-<p>And eventually, after 200 resolutions, I get the flag from the server (in my log file) : <code class="highlighter-rouge">flag: sctf{y0ub34tth3v3rt1c0d3}</code></p>
+<p>And eventually, after 200 resolutions, I get the flag from the server (in my log file) : <code class="language-plaintext highlighter-rouge">flag: sctf{y0ub34tth3v3rt1c0d3}</code></p>
 
 
 </div>

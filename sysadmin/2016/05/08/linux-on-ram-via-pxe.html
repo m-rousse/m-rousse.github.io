@@ -22,7 +22,7 @@
     "url": "https://math.rousse.me",
     "sameAs": [
       "https://fr.linkedin.com/in/mathieurousse",
-      "https://plus.google.com/110154694510997957312"
+      "https://github.com/m-rousse"
     ]
   }
   </script>
@@ -93,7 +93,7 @@
 
 <p>At first, I installed a server with Archlinux using the basic install.txt you find when using the install CD. (You can find more instructions on the Wiki : <a href="https://wiki.archlinux.org/index.php/Installation_guide">Installation Guide</a>.</p>
 
-<p>We need a TFTP server to deliver the bootfiles, I used <a href="https://www.archlinux.org/packages/?name=tftp-hpa">tftp-hpa</a>. The configuration is at <code class="highlighter-rouge">/etc/conf.d/tftpd</code> where you can set the root, which I set to <code class="highlighter-rouge">/</code> in order to test between different OSes without having to reboot <code class="highlighter-rouge">tftp-hpa</code> (It would having smarter to create a <code class="highlighter-rouge">/srv/pxe</code> folder with all my OSes inside).</p>
+<p>We need a TFTP server to deliver the bootfiles, I used <a href="https://www.archlinux.org/packages/?name=tftp-hpa">tftp-hpa</a>. The configuration is at <code class="language-plaintext highlighter-rouge">/etc/conf.d/tftpd</code> where you can set the root, which I set to <code class="language-plaintext highlighter-rouge">/</code> in order to test between different OSes without having to reboot <code class="language-plaintext highlighter-rouge">tftp-hpa</code> (It would having smarter to create a <code class="language-plaintext highlighter-rouge">/srv/pxe</code> folder with all my OSes inside).</p>
 
 <p>I tried using <a href="https://wiki.archlinux.org/index.php/dnsmasq">Dnsmasq</a> but as I am more used to <a href="https://wiki.archlinux.org/index.php/Dhcpd">dhcpd</a> I switched back to dhcpd.</p>
 
@@ -145,11 +145,11 @@ systemctl start nfs-idmapd
 systemctl start nfs-mountd</code></pre></div>
 <!--*-->
 
-<p>The OS folders are <code class="highlighter-rouge">/pxeroot</code> for the 64-bits version and <code class="highlighter-rouge">/pxeroot32</code> for the 32-bits version of the OS.</p>
+<p>The OS folders are <code class="language-plaintext highlighter-rouge">/pxeroot</code> for the 64-bits version and <code class="language-plaintext highlighter-rouge">/pxeroot32</code> for the 32-bits version of the OS.</p>
 
 <h2 id="the-guests">The guests</h2>
 
-<p>Archlinux offers some scripts (like <code class="highlighter-rouge">pacstrap</code> and <code class="highlighter-rouge">arch-chroot</code>) to install a new Arch, so we need to install those scripts then we can install Archlinux to <code class="highlighter-rouge">/pxeroot32</code> for the 32-bits version.</p>
+<p>Archlinux offers some scripts (like <code class="language-plaintext highlighter-rouge">pacstrap</code> and <code class="language-plaintext highlighter-rouge">arch-chroot</code>) to install a new Arch, so we need to install those scripts then we can install Archlinux to <code class="language-plaintext highlighter-rouge">/pxeroot32</code> for the 32-bits version.</p>
 
 <p><strong>BEWARE : You can install a 32-bits Archlinux only from a 32-bits host and same for 64-bits. If you want to install the 64-bits package from a 32-bits host a solution is to boot from an Archlinux live CD and choose the x86_64 kernel then mount the drive where /pxeroot resides and install the OS in it.</strong></p>
 
@@ -162,11 +162,11 @@ pacstrap -d /pxeroot32 base vim openssh mkinitcpio-nfs-utils nfs-utils</code></p
 
 <p><em>The initial ramdisk is in essence a very small environment (early userspace) which loads various kernel modules and sets up necessary things before handing over control to init. This makes it possible to have, for example, encrypted root file systems and root file systems on a software RAID array.</em></p>
 
-<p>Archlinux uses <code class="highlighter-rouge">mkinitcpio</code>, a script to forge the <code class="highlighter-rouge">initramfs.img</code> according to a configuration file which allows us to easily add modules or scripts.</p>
+<p>Archlinux uses <code class="language-plaintext highlighter-rouge">mkinitcpio</code>, a script to forge the <code class="language-plaintext highlighter-rouge">initramfs.img</code> according to a configuration file which allows us to easily add modules or scripts.</p>
 
-<p>The initramfs will execute a script named <code class="highlighter-rouge">init</code>, which mounts the root filesystem and make it the new root of the system before executing the init process (which then starts the system).</p>
+<p>The initramfs will execute a script named <code class="language-plaintext highlighter-rouge">init</code>, which mounts the root filesystem and make it the new root of the system before executing the init process (which then starts the system).</p>
 
-<p>We want the system to be stored in RAM so we have to change the init script. It is located at <code class="highlighter-rouge">/usr/lib/initcpio/init</code>.</p>
+<p>We want the system to be stored in RAM so we have to change the init script. It is located at <code class="language-plaintext highlighter-rouge">/usr/lib/initcpio/init</code>.</p>
 
 <p>Here is the diff of the changes I made. Most of the modifications here are inspired from <a href="https://bbs.archlinux.org/viewtopic.php?pid=1215085">this thread</a> of the Archlinux Forum with a few adjustments.</p>
 
@@ -209,7 +209,7 @@ pacstrap -d /pxeroot32 base vim openssh mkinitcpio-nfs-utils nfs-utils</code></p
 &gt; done</code></pre></div>
 <!--*-->
 
-<p>Then we have to load the <code class="highlighter-rouge">net</code> module so we can connect to NFS share. We just need to add the module to the <code class="highlighter-rouge">MODULE="..."</code> variable of <code class="highlighter-rouge">/etc/mkinitcpio.conf</code>. Here is what my mkinitcpio conf looks like :</p>
+<p>Then we have to load the <code class="language-plaintext highlighter-rouge">net</code> module so we can connect to NFS share. We just need to add the module to the <code class="language-plaintext highlighter-rouge">MODULE="..."</code> variable of <code class="language-plaintext highlighter-rouge">/etc/mkinitcpio.conf</code>. Here is what my mkinitcpio conf looks like :</p>
 
 <div><pre class="language-bash">
 <code class="language-bash">MODULES=""
@@ -224,7 +224,7 @@ HOOKS="base udev net autodetect modconf block filesystems keyboard fsck"</code><
 arch-chroot /pxeroot32 pacman -Sy grub
 arch-chroot /pxeroot32 grub-mknetdir --net-directory=/boot --subdir=grub</code></pre></div>
 
-<p>We built the initramfs and the grub image, we configured our DHCP to load the correct grub <code class="highlighter-rouge">core.0</code> file. Our system is ready to rock !</p>
+<p>We built the initramfs and the grub image, we configured our DHCP to load the correct grub <code class="language-plaintext highlighter-rouge">core.0</code> file. Our system is ready to rock !</p>
 
 <h2 id="optional--ipxe">Optional : iPXE</h2>
 
