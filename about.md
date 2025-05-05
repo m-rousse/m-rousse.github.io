@@ -23,7 +23,7 @@ I wrote my first line of code at 12 while fixing a “broken” PC my father ref
 
 ### Beyond the terminal
 
-Music keeps me grounded: I’ve played everything from metal guitar to jazz bass, and according to Spotify I now spend nearly half my waking hours listening to music. When I’m not at a keyboard, you’ll find me chasing light with my camera, cycling along French back‑roads, or brewing beer.
+Music keeps me grounded: I’ve played from metal guitar to jazz bass, and according to Spotify I now spend nearly half my waking hours listening to music. When I’m not at a keyboard, you’ll find me chasing light with my camera, cycling along French back‑roads, or brewing beer.
 
 See you around,
 
