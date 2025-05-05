@@ -2,24 +2,28 @@
 layout: page
 title: About
 permalink: /about/
-excerpt: About me, an IT security student eager to discover new technologies and write a safer world !
+excerpt: Cybersecurity engineer, engineering leader, and lifelong learner building safer software.
 sitemap:
-  lastmod: 2016-04-21
-  priority: 0.6
-  changefreq: 'yearly'
+lastmod: 2025-05-04
+priority: 0.6
+changefreq: 'yearly'
 ---
 
-My name is Mathieu Rousse. I am a musician, technology addict and an occasional photographer.
+Hi, I'm **Mathieu Rousse**, a cybersecurity engineer, builder, and perpetual learner currently serving as **Head of Engineering** at **[Escape](https://escape.tech)**.
 
-I learnt acoustic guitar, played electric guitar then took bass guitar lessons (some might speak of a regression, but I disagree as it is a very different way of feeling music). I played in different music bands, from metal to jazz. I had to put guitar aside, but I still enjoy and need music every day.
+### What I do
 
-I started playing with technologies (and computers) when I was twelve years old when my father told me "It's broken ? It's your business, get it fixed if you want to use it." This is as of today one of the most valuable advices I ever got.
+- Lead a distributed engineering org focused on API security, platform reliability, and developer experience.
+- Previously co‑founded **Hopserve**, a cloud‑native security startup, after several years building the Synthetics product at **Datadog**.
+- Regular visitor at BSides, LeHack, and other security meet‑ups; occasional CTF medalist.
 
-This curious mind led me to play with everything that had mechanics or electronics inside. A beautiful object with meca/elec in it is the camera. My father had one of the first digital camera (bought during the 2000's) and I was astonished it could capture more than a hundred photos in one tiny chip. After a few years and two other cameras, he allowed me to take his during my holidays. I was with friends in a small village of France, with a camera, a tripod, and a clear sky... I fell in love with photography because of this picture I took during the night.
+### Why I do it
 
-{% lightbox first-pic.jpg %}
+I wrote my first line of code at 12 while fixing a “broken” PC my father refused to repair for me. That spark of curiosity never left. Today I help teams ship fast **and** safe software because security should accelerate and not slow innovation.
 
-Most of my time is spent around computer technologies as you can see with my projects !
+### Beyond the terminal
+
+Music keeps me grounded — I’ve played everything from metal guitar to jazz bass. When not in front of a keyboard, you’ll find me chasing light with my camera, cycling French back‑roads, or brewing beer.
 
 See you around,
 
